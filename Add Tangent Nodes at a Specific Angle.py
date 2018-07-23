@@ -135,12 +135,12 @@ class AddTangentNodesAtAngle( object ):
                 newPaths = layer.paths
             
 
-            # Duplicate the tangent nodes (for extrusion)
-            if duplicateNodes:
+            # Iterate the new paths, which are stored separately 
+            # and were not appended to the layer yet
+            for path in newPaths:
 
-                # Iterate the new paths, which are stored separately 
-                # and were not appended to the layer yet
-                for path in newPaths:
+                # Duplicate the tangent nodes (for extrusion)
+                if duplicateNodes:
 
                     # Get all oncurve nodes
                     onCurveNodes = [ node for node in path.nodes if node.type != "offcurve" ]
@@ -209,47 +209,51 @@ class AddTangentNodesAtAngle( object ):
                         layer.selection.append( node )
 
 
-            # Move the nodes
-            if distance != 0:
+                # Move the nodes
+                if distance != 0:
 
-                # Calculate the deltaX and deltaY
-                deltaX = math.cos( math.radians(angle) ) * distance
-                deltaY = math.sin( math.radians(angle) ) * distance
+                    # Calculate the deltaX and deltaY
+                    deltaX = math.cos( math.radians( angle ) ) * distance
+                    deltaY = math.sin( math.radians( angle ) ) * distance
 
-                # Create a copy of the layer and offset all paths by 1 unit.
-                fakeLayer = layer.copy()
-                offsetCurveFilter = NSClassFromString("GlyphsFilterOffsetCurve")
-                offsetCurveFilter.offsetLayer_offsetX_offsetY_makeStroke_autoStroke_position_error_shadow_( fakeLayer, 2, 2, False, False, 0.5, None, None )
-                
-                for p, path in enumerate(newPaths):
-                    
+
                     # Check if the start point should move or not
-                    
-                    # Get the NSBezierPath and the NSPoint for the start node
-                    offsetPath = fakeLayer.paths[p].bezierPath
-                    print offsetPath
-                    startPoint = path.nodes[-1].position
                     fixedStartPoint = True
-                    # Move the NSBezierPath by deltaX and deltaY
-                    translate = NSAffineTransform.transform()
-                    translate.translateXBy_yBy_( 3, 3 )
-                    offsetPath.transformUsingAffineTransform_( translate )
+                    startNode = path.nodes[-1]
+                    # If the start node is one of the diagonal extremes, use 
+                    # the angle we get after subtracting the tangentAngle from 
+                    # the secondNodeAngle to determine if the start should be fixed 
+                    # or not. It should move if it sits below the horizontal axis.
+                    if startNode in allExtremes:
+                        secondNodeAngle = path.tangentAngleAtNode_direction_( path.nodes[0], 1 )
+                        secondNodeHorizontal = secondNodeAngle - tangentAngle
+                        if math.sin( math.radians( secondNodeHorizontal ) ) < 0:
+                            fixedStartPoint = False
+                    # If the start node is not a diagonal extreme, duplicate the
+                    # path and move it by 1 unit in the direction of the extrusion.
+                    else: 
+                        # Get the NSBezierPath and move it
+                        offsetPath = path.bezierPath
+                        translate = NSAffineTransform.transform()
+                        translate.translateXBy_yBy_( 
+                            math.copysign( 1, deltaX ), 
+                            math.copysign( 1, deltaY ) )
+                        offsetPath.transformUsingAffineTransform_( translate )
                     
-                    # On counterclockwise (filled) paths, the start node should 
-                    # move if the start node falls INSIDE the transformed path
-                    if path.direction == -1:
-                        if not offsetPath.containsPoint_( startPoint ):
-                            fixedStartPoint = False
-                    # On clockwise paths, the start node should move if the 
-                    # start node falls OUTSIDE the transformed path
-                    elif path.direction == 1:
-                        if offsetPath.containsPoint_( startPoint ):
-                            fixedStartPoint = False
+                        startPoint = startNode.position
+                        # On counterclockwise (filled) paths, the start node should 
+                        # move if the start node falls INSIDE the transformed path
+                        if path.direction == -1:
+                            if offsetPath.containsPoint_( startPoint ):
+                                fixedStartPoint = False
+                        # On clockwise paths, the start node should move if the 
+                        # start node falls OUTSIDE the transformed path
+                        elif path.direction == 1:
+                            if not offsetPath.containsPoint_( startPoint ):
+                                fixedStartPoint = False
 
-                    print fixedStartPoint
-                    
-                    # If the start point should move, we need to rearrange 
-                    # the list with our diagonal extremes
+                    # If the start point should move, rearrange 
+                    # the list the diagonal extremes
                     if fixedStartPoint == False:
                         print path.nodes[-1]
                         print diagonalExtremes
