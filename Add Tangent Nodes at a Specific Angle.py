@@ -5,7 +5,7 @@ Insert points on the tangents at a specific angle
 """
 
 from Foundation import NSAffineTransform
-import vanilla, math
+import vanilla, math, numpy
 
 font = Glyphs.font
 Glyphs.clearLog()
@@ -88,6 +88,7 @@ class AddTangentNodesAtAngle( object ):
             print layer.parent
 
 
+            almostExtremes = []
             # Find the tangent nodes
             if angle % 90: # if not a right angle
 
@@ -108,21 +109,54 @@ class AddTangentNodesAtAngle( object ):
                             newNode = path.nodes[ point.index ].copy()
                             originalSegment.addNode_( newNode )
                         fakeSegment = originalSegment.copy()
+                        fakeSegment.nodes[0].type = "line"
+                        
                         # Rotate the segment and add points to the extremes
                         self.RotatePath( fakeSegment, tangentAngle )        
                         # fakeSegment.addNodesAtExtremes()
                         fakeSegment.addExtremes_( True )
-                        # Get the tangent angle of the middle node
-                        middleNode = fakeSegment.nodes[3]
-                        middleTangent = round( 
-                            fakeSegment.tangentAngleAtNode_direction_( middleNode, 5 ) 
-                            )
+                        
+                        closestNode = None
+                        middleTangent = 1
+                        if len( fakeSegment ) == 7:
+                            # Get the tangent angle of the middle node
+                            middleNode = fakeSegment.nodes[3]
+                            middleTangent = round( 
+                                fakeSegment.tangentAngleAtNode_direction_( middleNode, 5 ) 
+                                )
+                        
+                        elif len( fakeSegment ) == 4:
+                            boundsLowX = fakeSegment.bounds.origin.x
+                            boundsHighX = boundsLowX + fakeSegment.bounds.size.width
+                            startNode = fakeSegment.nodes[0]
+                            endNode = fakeSegment.nodes[-1]
+                            errorMargin = 0.01
+                            
+                            if boundsLowX < startNode.position.x - errorMargin:
+                                if boundsLowX < endNode.position.x - errorMargin:
+                                    if startNode.position.x < endNode.position.x:
+                                        closestNode = startNode
+                                    else:
+                                        closestNode = endNode
+                                    print closestNode.position
+                            elif boundsHighX > startNode.position.x + errorMargin:
+                                if boundsHighX > endNode.position.x + errorMargin:
+                                    if startNode.position.x > endNode.position.x:
+                                        closestNode = startNode
+                                    else:
+                                        closestNode = endNode
+                         
                         # Rotate the segment back
                         self.RotatePath( fakeSegment, -tangentAngle )
+
+                        if closestNode:
+                            almostExtremes.append( closestNode.position )
+
                         # If the new diagonal extremes are perpendicular to our angle,
                         # restore the original segment
-                        if middleTangent % 180 == 0:
+                        if middleTangent % 180 == 0: # check if horizontal
                             fakeSegment = originalSegment
+                        
                         # Add the nodes to the new path, skipping the first node 
                         # because the last and first ones repeat on adjacent segments
                         for node in fakeSegment.nodes[1:]:
@@ -134,6 +168,8 @@ class AddTangentNodesAtAngle( object ):
             else: # if right angle
                 newPaths = layer.paths
             
+
+            print "almostExtremes:", almostExtremes
 
             # Iterate the new paths, which are stored separately 
             # and were not appended to the layer yet
@@ -158,7 +194,10 @@ class AddTangentNodesAtAngle( object ):
                     for node in onCurveNodes:
                         errorMargin = 1.5 # in degrees
                         
-                        if node.smooth == True: # smooth node
+                        if node.position in almostExtremes:
+                            diagonalExtremes.append( node )
+
+                        elif node.smooth == True: # smooth node
                             # For smooth nodes, check if their tangent angles match ours. 
                             # If true, adds the node to our list of diagonal extremes.
                             # An error margin is considered.
@@ -289,6 +328,7 @@ class AddTangentNodesAtAngle( object ):
             if newPaths:
                 layer.paths = newPaths
                 layer.roundCoordinates()
+                layer.selection = None
 
         font.enableUpdateInterface()
 
