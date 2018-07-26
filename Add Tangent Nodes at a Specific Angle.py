@@ -46,7 +46,7 @@ class AddTangentNodesAtAngle( object ):
         try:
             Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.angle"] = self.w.angle.get()
             Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.distance"] = self.w.distance.get()
-            Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.duplicateNodes"] = self.w.distance.get()
+            Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.duplicateNodes"] = self.w.duplicateNodes.get()
         except:
             return False
 
@@ -85,8 +85,6 @@ class AddTangentNodesAtAngle( object ):
         duplicateNodes = self.w.duplicateNodes.get()
         
         for layer in layers:
-            print layer.parent
-
 
             almostExtremes = []
             # Find the tangent nodes
@@ -138,7 +136,6 @@ class AddTangentNodesAtAngle( object ):
                                         closestNode = startNode
                                     else:
                                         closestNode = endNode
-                                    print closestNode.position
                             elif boundsHighX > startNode.position.x + errorMargin:
                                 if boundsHighX > endNode.position.x + errorMargin:
                                     if startNode.position.x > endNode.position.x:
@@ -168,8 +165,6 @@ class AddTangentNodesAtAngle( object ):
             else: # if right angle
                 newPaths = layer.paths
             
-
-            print "almostExtremes:", almostExtremes
 
             # Iterate the new paths, which are stored separately 
             # and were not appended to the layer yet
@@ -292,37 +287,38 @@ class AddTangentNodesAtAngle( object ):
                                 fixedStartPoint = False
 
                     # If the start point should move, rearrange 
-                    # the list the diagonal extremes
+                    # the list containing the diagonal extremes
                     if fixedStartPoint == False:
-                        print path.nodes[-1]
-                        print diagonalExtremes
                         if path.nodes[-1] not in diagonalExtremes:
                             if diagonalExtremes[-1].index > diagonalExtremes[0].index:
                                 lastNode = diagonalExtremes.pop(-1)
                                 diagonalExtremes.insert( 0, lastNode )
 
-                    n = 0
-                    tupleList = []
-                    for i in range( len(diagonalExtremes)/2 ):
-                        tupleList.append( (diagonalExtremes[n], diagonalExtremes[n+1]) )
-                        n += 2
+                    # Only move if the number diagonal extremes is even
+                    if len(diagonalExtremes) % 2 == 0:
+                        n = 0
+                        tupleList = []
+                        for i in range( len(diagonalExtremes)/2 ):
+                            tupleList.append( (diagonalExtremes[n], diagonalExtremes[n+1]) )
+                            n += 2
 
-                    for pair in tupleList:
-                        if pair[0].index > pair[1].index:
-                            selection = path.nodes[ pair[0].index +1 : ]
-                            selection.extend( path.nodes[ : pair[1].index +1 ] )
-                        else:
-                            selection = path.nodes[ pair[0].index +1 : pair[1].index +1 ]
+                        for pair in tupleList:
+                            if pair[0].index > pair[1].index:
+                                selection = path.nodes[ pair[0].index +1 : ]
+                                selection.extend( path.nodes[ : pair[1].index +1 ] )
+                            else:
+                                selection = path.nodes[ pair[0].index +1 : pair[1].index +1 ]
 
-                        layer.selection = selection
+                            layer.selection = selection
 
-                        # Finaly move a node
-                        for node in layer.selection:
-                            pos = node.position
-                            pos.x = pos.x + deltaX
-                            pos.y = pos.y + deltaY
-                            node.position = pos
-
+                            # Finaly move a node
+                            for node in layer.selection:
+                                pos = node.position
+                                pos.x = pos.x + deltaX
+                                pos.y = pos.y + deltaY
+                                node.position = pos
+                    else:
+                        print "Could not find all extremes for glyph", layer.parent.name
 
             # Replace all paths with the new ones
             if newPaths:

@@ -1,7 +1,7 @@
 #MenuTitle: Make Next Node First
 # -*- coding: utf-8 -*-
 __doc__="""
-Moves the first node of the path to the next one
+Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
 """
 
 thisFont = Glyphs.font
