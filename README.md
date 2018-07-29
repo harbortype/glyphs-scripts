@@ -12,6 +12,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Make Previous Node First:** Moves the start point of the selected  path(s) to the previous oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
+- **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix.
 
 ## Installing
 
