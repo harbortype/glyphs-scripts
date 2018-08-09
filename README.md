@@ -21,19 +21,21 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ```json
 {
-	"Extrude": [ 15, 54, 69 ], // RGB value for solid fill
+	"Extrude": [ 15, 54, 69 ],
 	"Regular": [ 1, 187, 226 ],
-	"Bevel B": {               // this is a gradient fill
-		"startPoint": [0,0],   // x,y coordinate
-		"endPoint": [0,550],   // x,y coordinate
+	"Bevel B": {
+		"startPoint": [0,0],
+		"endPoint": [0,550],
 		"colors": [
-			[ 168, 231, 244 ], // first RGB color
-			[ 195, 241, 249 ]  // second RGB color
-		],                     // add more colors as needed
-		"locations": [0,1]     // location of each color in gradient
+			[ 168, 231, 244 ],
+			[ 195, 241, 249 ]
+		],
+		"locations": [0,1]
 	}
 }
 ```
+
+I believe the template above is quite self-explanatory. `Extrude`, `Regular` and `Bevel B` are names masters in our .glyphs file. Extrude and Regular have a solid fill, while Bevel B has a linear gradient fill. All trio of values represent RGB colors. You may add more colors as necessary. If you do so, remember to include additional “stops” in `locations`. Zero represents the start point of the gradient and 1 is the end point.
 
 2) Run the script and type the name of the JSON file on the window. The script will create a subfolder with the same name and place all SVGs inside it.
 
