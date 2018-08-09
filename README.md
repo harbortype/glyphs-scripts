@@ -5,14 +5,14 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 ## Script list
 
 - **Add Extremes to Selection:** Adds extreme points to selected paths.
-- **Add Tangent Nodes at a Specific Angle:** Insert points on the tangents at a specific angle. Optionally extrude the path in the same direction, creating a block shadow effect.
-- **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on @mekkablue's Copy Layer to Layer script.
-- **Interpolate Path with Itself:** Interpolates the path with itself. The fixed half will be the one with the start point. 
+- **Add Tangent Nodes at a Specific Angle:** Insert points on the tangents at a specific angle. Optionally extrude the path in the same direction, creating a block shadow effect. Needs Vanilla.
+- **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
+- **Interpolate Path with Itself:** Interpolates the path with itself. The fixed half will be the one with the start point. This script will be improved in the near future.
 - **Make Next Node First:** Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **Make Previous Node First:** Moves the start point of the selected  path(s) to the previous oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
-- **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix.
+- **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.
 
 ## Installing
 
