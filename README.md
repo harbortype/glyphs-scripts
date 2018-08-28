@@ -8,6 +8,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Add Tangent Nodes at a Specific Angle:** Insert points on the tangents at a specific angle. Optionally extrude the path in the same direction, creating a block shadow effect. Needs Vanilla.
 - **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
 - **Duplicate Selected Nodes:** Creates a copy of the selected nodes and adds them in place.
+- **Duplicate Selected Nodes with Offcurve Points:** Creates a copy of the selected nodes, adds them in place and create zero-length offcurve points in between.
 - **Interpolate Path with Itself:** Interpolates the path with itself. The fixed half will be the one with the start point. This script will be improved in the near future.
 - **Make Next Node First:** Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **Make Previous Node First:** Moves the start point of the selected  path(s) to the previous oncurve node. Specially useful if assigned to a keyboard shortcut.
