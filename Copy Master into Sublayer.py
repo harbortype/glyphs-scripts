@@ -74,7 +74,7 @@ class CopyMasterIntoSublayer( object ):
 		return myMasterList
 
 
-	def CheckIfSublayerExists( self, glyph, sublayer ):
+	def CheckIfSublayerExists( self, masterId, sublayerName, glyph ):
 		"""Checks if there is a sublayer of the same name. 
 		If it does, clear the layer. 
 		If it doesn't, create the layer."""
@@ -82,9 +82,17 @@ class CopyMasterIntoSublayer( object ):
 			# Find a layer with the name informed by the user and associated with the current master.
 			# Effectively, this will loop through all layers in all masters and return only if the layer
 			# is a child of the current master (associatedMasterId)
-			if layer.name == sublayer and layer.associatedMasterId == currentMaster.id:
+			if layer.name == sublayerName and layer.associatedMasterId == masterId:
 				return layer
 		return None
+
+
+	def CreateEmptySublayer( self, masterId, sublayerName, glyph ):
+		"""Creates a new empty GSLayer object and appends it to the current glyph under the current master."""
+		newLayer = GSLayer()
+		newLayer.name = sublayerName
+		newLayer.associatedMasterId = masterId
+		glyph.layers.append(newLayer)
 
 
 	def ClearSublayer( self, sublayer ):
@@ -95,18 +103,12 @@ class CopyMasterIntoSublayer( object ):
 		sublayer.background = None
 
 
-	def CreateEmptySublayer( self, sublayerName, glyph ):
-		"""Creates a new empty GSLayer object and appends it to the current glyph under the current master."""
-		newLayer = GSLayer()
-		newLayer.name = sublayerName
-		newLayer.associatedMasterId = currentMaster.id
-		glyph.layers.append(newLayer)
-
-
 	def CopyAll( self, sender ):
 		"""Copies all data into the sublayer."""
 		sublayerName = self.w.layerTarget.get()
 		indexOfMasterSource = self.w.masterSource.get()
+		indexOfMasterDestination = self.w.masterDestination.get()
+		masterDestinationId = thisFont.masters[ indexOfMasterDestination ].id
 		# Gets the selected glyphs
 		selectedGlyphs = [ x.parent for x in thisFont.selectedLayers ]
 
@@ -114,12 +116,12 @@ class CopyMasterIntoSublayer( object ):
 		for glyph in selectedGlyphs:
 
 			# Prepare sublayer
-			sublayer = self.CheckIfSublayerExists( glyph, sublayerName )
+			sublayer = self.CheckIfSublayerExists( masterDestinationId, sublayerName, glyph )
 			if sublayer:
 				self.ClearSublayer( sublayer )
 			else:
-				self.CreateEmptySublayer( sublayerName, glyph )
-				sublayer = self.CheckIfSublayerExists( glyph, sublayerName )
+				self.CreateEmptySublayer( masterDestinationId, sublayerName, glyph )
+				sublayer = self.CheckIfSublayerExists( masterDestinationId, sublayerName, glyph )
 
 			# Copy paths, components and anchors
 			sublayer.paths = glyph.layers[ indexOfMasterSource ].paths
