@@ -1,4 +1,4 @@
-#MenuTitle: Add Tangent Nodes at a Specific Angle
+#MenuTitle: Make Block Shadow
 # -*- coding: utf-8 -*-
 __doc__="""
 Insert points on the tangents at a specific angle
@@ -11,7 +11,7 @@ font = Glyphs.font
 Glyphs.clearLog()
 
 
-class AddTangentNodesAtAngle( object ):
+class MakeBlockShadow( object ):
 
     def __init__( self ):
 
@@ -19,10 +19,10 @@ class AddTangentNodesAtAngle( object ):
         windowHeight = 190
         self.w = vanilla.FloatingWindow(
             ( windowWidth, windowHeight ),
-            "Add tangent nodes at angle",
+            "Make Block Shadow",
             minSize = ( windowWidth, windowHeight ),
             maxSize = ( windowWidth, windowHeight ),
-            autosaveName = "com.harbortype.AddTangentNodesAtAngle.mainwindow"
+            autosaveName = "com.harbortype.MakeBlockShadow.mainwindow"
         )
 
         self.w.text_1 = vanilla.TextBox( (30, 26, 120, 17), "Angle:" )
@@ -31,12 +31,12 @@ class AddTangentNodesAtAngle( object ):
         self.w.distance = vanilla.EditText( (100, 54, -30, 22), callback=self.SavePreferences )
         self.w.duplicateNodes = vanilla.CheckBox( (30, 86, -30, 22), "Duplicate nodes on tangents",
             callback=self.SavePreferences, value=True)
-        self.w.button = vanilla.Button( (30, -46, -30, 20), "Add Nodes", callback=self.Main )
+        self.w.button = vanilla.Button( (30, -46, -30, 20), "Make Shadow", callback=self.Main )
         
         self.w.setDefaultButton( self.w.button )
 
         if not self.LoadPreferences():
-            print "Note: 'Add Tangent Nodes at a Specific Angle' could not load preferences. Will resort to defaults."
+            print "Note: 'Make Block Shadow' could not load preferences. Will resort to defaults."
         
         self.w.open()
         self.w.makeKey()
@@ -44,9 +44,9 @@ class AddTangentNodesAtAngle( object ):
 
     def SavePreferences( self, sender ):
         try:
-            Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.angle"] = self.w.angle.get()
-            Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.distance"] = self.w.distance.get()
-            Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.duplicateNodes"] = self.w.duplicateNodes.get()
+            Glyphs.defaults["com.harbortype.MakeBlockShadow.angle"] = self.w.angle.get()
+            Glyphs.defaults["com.harbortype.MakeBlockShadow.distance"] = self.w.distance.get()
+            Glyphs.defaults["com.harbortype.MakeBlockShadow.duplicateNodes"] = self.w.duplicateNodes.get()
         except:
             return False
 
@@ -55,12 +55,12 @@ class AddTangentNodesAtAngle( object ):
 
     def LoadPreferences( self ):
         try:
-            Glyphs.registerDefault("com.harbortype.AddTangentNodesAtAngle.angle", 45)
-            Glyphs.registerDefault("com.harbortype.AddTangentNodesAtAngle.distance", 0)
-            Glyphs.registerDefault("com.harbortype.AddTangentNodesAtAngle.duplicateNodes", False)
-            self.w.angle.set( Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.angle"] )
-            self.w.distance.set( Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.distance"] )
-            self.w.duplicateNodes.set( Glyphs.defaults["com.harbortype.AddTangentNodesAtAngle.duplicateNodes"] )
+            Glyphs.registerDefault("com.harbortype.MakeBlockShadow.angle", -45)
+            Glyphs.registerDefault("com.harbortype.MakeBlockShadow.distance", 100)
+            Glyphs.registerDefault("com.harbortype.MakeBlockShadow.duplicateNodes", True)
+            self.w.angle.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.angle"] )
+            self.w.distance.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.distance"] )
+            self.w.duplicateNodes.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.duplicateNodes"] )
         except:
             return False
 
@@ -71,7 +71,7 @@ class AddTangentNodesAtAngle( object ):
         """Rotates a path by an angle in degrees"""
         transform = NSAffineTransform.transform()
         transform.rotateByDegrees_( angle )
-        for node in path.points:
+        for node in path.nodes:
             node.position = transform.transformPoint_(
                 NSMakePoint(node.x, node.y)
                 )
@@ -103,19 +103,27 @@ class AddTangentNodesAtAngle( object ):
                         # Create a path from the segment and duplicate it 
                         # so we can compare with the original later on
                         originalSegment = GSPath()
-                        for point in segment.points:
-                            newNode = path.nodes[ point.index ].copy()
+                        for index, point in enumerate(segment):
+                            newNode = GSNode()
+                            newNode.position = point.x, point.y
+                            if index in [1,2] and len(segment) == 4:
+                                newNode.type = "offcurve"
+                            elif index == 1 and len(segment) == 2:
+                                newNode.type = "line"
+                            else:
+                                newNode.type = "curve"
                             originalSegment.addNode_( newNode )
                         fakeSegment = originalSegment.copy()
                         fakeSegment.nodes[0].type = "line"
                         
                         # Rotate the segment and add points to the extremes
                         self.RotatePath( fakeSegment, tangentAngle )        
-                        # fakeSegment.addNodesAtExtremes()
                         fakeSegment.addExtremes_( True )
                         
                         closestNode = None
                         middleTangent = 1
+
+                        # If the segment has 7 nodes, an extreme point was added
                         if len( fakeSegment ) == 7:
                             # Get the tangent angle of the middle node
                             middleNode = fakeSegment.nodes[3]
@@ -126,8 +134,9 @@ class AddTangentNodesAtAngle( object ):
                         elif len( fakeSegment ) == 4:
                             boundsLowX = fakeSegment.bounds.origin.x
                             boundsHighX = boundsLowX + fakeSegment.bounds.size.width
-                            startNode = fakeSegment.nodes[0]
-                            endNode = fakeSegment.nodes[-1]
+                            nodeList = list(fakeSegment.nodes)
+                            startNode = nodeList[0]
+                            endNode = nodeList[-1]
                             errorMargin = 0.01
                             
                             if boundsLowX < startNode.position.x - errorMargin:
@@ -250,6 +259,12 @@ class AddTangentNodesAtAngle( object ):
                     deltaX = math.cos( math.radians( angle ) ) * distance
                     deltaY = math.sin( math.radians( angle ) ) * distance
 
+                    # # Build a list containing all duplicate nodes
+                    # allExtremes = []
+                    # for node in path.nodes:
+                    #     if node.position == node.nextNode.position:
+                    #         allExtremes.extend( [ node, node.nextNode] )
+                    # print allExtremes
 
                     # Check if the start point should move or not
                     fixedStartPoint = True
@@ -328,4 +343,4 @@ class AddTangentNodesAtAngle( object ):
 
         font.enableUpdateInterface()
 
-AddTangentNodesAtAngle()
+MakeBlockShadow()
