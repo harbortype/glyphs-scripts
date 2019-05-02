@@ -16,7 +16,7 @@ class MakeBlockShadow( object ):
     def __init__( self ):
 
         windowWidth = 260
-        windowHeight = 190
+        windowHeight = 160
         self.w = vanilla.FloatingWindow(
             ( windowWidth, windowHeight ),
             "Make Block Shadow",
@@ -29,8 +29,6 @@ class MakeBlockShadow( object ):
         self.w.angle = vanilla.EditText( (100, 24, -30, 22), callback=self.SavePreferences )
         self.w.text_2 = vanilla.TextBox( (30, 56, 120, 17), "Distance:" )
         self.w.distance = vanilla.EditText( (100, 54, -30, 22), callback=self.SavePreferences )
-        self.w.duplicateNodes = vanilla.CheckBox( (30, 86, -30, 22), "Duplicate nodes on tangents",
-            callback=self.SavePreferences, value=True)
         self.w.button = vanilla.Button( (30, -46, -30, 20), "Make Shadow", callback=self.Main )
         
         self.w.setDefaultButton( self.w.button )
@@ -46,7 +44,6 @@ class MakeBlockShadow( object ):
         try:
             Glyphs.defaults["com.harbortype.MakeBlockShadow.angle"] = self.w.angle.get()
             Glyphs.defaults["com.harbortype.MakeBlockShadow.distance"] = self.w.distance.get()
-            Glyphs.defaults["com.harbortype.MakeBlockShadow.duplicateNodes"] = self.w.duplicateNodes.get()
         except:
             return False
 
@@ -57,10 +54,8 @@ class MakeBlockShadow( object ):
         try:
             Glyphs.registerDefault("com.harbortype.MakeBlockShadow.angle", -45)
             Glyphs.registerDefault("com.harbortype.MakeBlockShadow.distance", 100)
-            Glyphs.registerDefault("com.harbortype.MakeBlockShadow.duplicateNodes", True)
             self.w.angle.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.angle"] )
             self.w.distance.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.distance"] )
-            self.w.duplicateNodes.set( Glyphs.defaults["com.harbortype.MakeBlockShadow.duplicateNodes"] )
         except:
             return False
 
@@ -82,7 +77,6 @@ class MakeBlockShadow( object ):
         layers = font.selectedLayers
         angle = int(self.w.angle.get())
         distance = int(self.w.distance.get())
-        duplicateNodes = self.w.duplicateNodes.get()
         
         for layer in layers:
 
@@ -180,76 +174,75 @@ class MakeBlockShadow( object ):
             for path in newPaths:
 
                 # Duplicate the tangent nodes (for extrusion)
-                if duplicateNodes:
 
-                    # Get all oncurve nodes
-                    onCurveNodes = [ node for node in path.nodes if node.type != "offcurve" ]
+                # Get all oncurve nodes
+                onCurveNodes = [ node for node in path.nodes if node.type != "offcurve" ]
 
-                    # Create a list for our "diagonal extremes"
-                    diagonalExtremes = []
+                # Create a list for our "diagonal extremes"
+                diagonalExtremes = []
 
-                    # Make the angle positive
-                    tangentAngle = angle
-                    while tangentAngle < 0:
-                        tangentAngle += 360
-                    # Get the angle value from 0° to 180°
-                    tangentAngle = tangentAngle % 180
+                # Make the angle positive
+                tangentAngle = angle
+                while tangentAngle < 0:
+                    tangentAngle += 360
+                # Get the angle value from 0° to 180°
+                tangentAngle = tangentAngle % 180
 
-                    for node in onCurveNodes:
-                        errorMargin = 1.5 # in degrees
-                        
-                        if node.position in almostExtremes:
+                for node in onCurveNodes:
+                    errorMargin = 1.5 # in degrees
+                    
+                    if node.position in almostExtremes:
+                        diagonalExtremes.append( node )
+
+                    elif node.smooth == True: # smooth node
+                        # For smooth nodes, check if their tangent angles match ours. 
+                        # If true, adds the node to our list of diagonal extremes.
+                        # An error margin is considered.
+                        minTangentAngle = tangentAngle - errorMargin
+                        maxTangentAngle = tangentAngle + errorMargin
+                        nextNodeTan = round( path.tangentAngleAtNode_direction_( node, 1 ) )
+                        if nextNodeTan < 0:
+                            nextNodeTan += 180
+                        if nextNodeTan > minTangentAngle and nextNodeTan < maxTangentAngle:
                             diagonalExtremes.append( node )
-
-                        elif node.smooth == True: # smooth node
-                            # For smooth nodes, check if their tangent angles match ours. 
-                            # If true, adds the node to our list of diagonal extremes.
-                            # An error margin is considered.
-                            minTangentAngle = tangentAngle - errorMargin
-                            maxTangentAngle = tangentAngle + errorMargin
-                            nextNodeTan = round( path.tangentAngleAtNode_direction_( node, 1 ) )
-                            if nextNodeTan < 0:
-                                nextNodeTan += 180
-                            if nextNodeTan > minTangentAngle and nextNodeTan < maxTangentAngle:
+                    
+                    else: # corner node
+                        # For non-smooth angles, check if our tangent falls outside 
+                        # the angle of the corner. If true, this means this particular 
+                        # node will produce a line when extruded.
+                        nextNodeAngle = path.tangentAngleAtNode_direction_( node, 1 )
+                        prevNodeAngle = path.tangentAngleAtNode_direction_( node, -1 )
+                        # Subtract the tangent angle from the angles of the corner 
+                        # then uses sine to check if the angle falls below or above 
+                        # the horizontal axis. Only add the node if the angle is 
+                        # completely above or below the line.
+                        nextNodeHorizontal = nextNodeAngle - tangentAngle
+                        prevNodeHorizontal = prevNodeAngle - tangentAngle
+                        if math.sin( math.radians(nextNodeHorizontal) ) < 0:
+                            if math.sin( math.radians(prevNodeHorizontal) ) < 0: 
+                                diagonalExtremes.append( node ) 
+                        if math.sin( math.radians(nextNodeHorizontal) ) > 0:
+                            if math.sin( math.radians(prevNodeHorizontal) ) > 0:
                                 diagonalExtremes.append( node )
-                        
-                        else: # corner node
-                            # For non-smooth angles, check if our tangent falls outside 
-                            # the angle of the corner. If true, this means this particular 
-                            # node will produce a line when extruded.
-                            nextNodeAngle = path.tangentAngleAtNode_direction_( node, 1 )
-                            prevNodeAngle = path.tangentAngleAtNode_direction_( node, -1 )
-                            # Subtract the tangent angle from the angles of the corner 
-                            # then uses sine to check if the angle falls below or above 
-                            # the horizontal axis. Only add the node if the angle is 
-                            # completely above or below the line.
-                            nextNodeHorizontal = nextNodeAngle - tangentAngle
-                            prevNodeHorizontal = prevNodeAngle - tangentAngle
-                            if math.sin( math.radians(nextNodeHorizontal) ) < 0:
-                                if math.sin( math.radians(prevNodeHorizontal) ) < 0: 
-                                    diagonalExtremes.append( node ) 
-                            if math.sin( math.radians(nextNodeHorizontal) ) > 0:
-                                if math.sin( math.radians(prevNodeHorizontal) ) > 0:
-                                    diagonalExtremes.append( node )
 
-                    # Duplicate the diagonal extremes and returns an updated list of nodes
-                    duplicateExtremes = []
-                    for node in diagonalExtremes:
-                        newNode = GSNode()
-                        newNode.type = "line"
-                        newNode.smooth = False
-                        newNode.position = node.position
-                        node.smooth = False
-                        path.insertNode_atIndex_( newNode, node.index+1 )
-                        duplicateExtremes.append( newNode )
-                    allExtremes = []
-                    for i in range( len(diagonalExtremes) ):
-                        allExtremes.append( diagonalExtremes[i] )
-                        allExtremes.append( duplicateExtremes[i] )
+                # Duplicate the diagonal extremes and returns an updated list of nodes
+                duplicateExtremes = []
+                for node in diagonalExtremes:
+                    newNode = GSNode()
+                    newNode.type = "line"
+                    newNode.smooth = False
+                    newNode.position = node.position
+                    node.smooth = False
+                    path.insertNode_atIndex_( newNode, node.index+1 )
+                    duplicateExtremes.append( newNode )
+                allExtremes = []
+                for i in range( len(diagonalExtremes) ):
+                    allExtremes.append( diagonalExtremes[i] )
+                    allExtremes.append( duplicateExtremes[i] )
 
-                    # Selects the diagonal extreme nodes
-                    for node in diagonalExtremes:
-                        layer.selection.append( node )
+                # Selects the diagonal extreme nodes
+                for node in diagonalExtremes:
+                    layer.selection.append( node )
 
 
                 # Move the nodes
