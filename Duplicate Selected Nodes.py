@@ -6,22 +6,30 @@ Creates a copy of the selected nodes and adds them in place
 
 font = Glyphs.font
 layer = font.selectedLayers[0]
+newPathsArray = []
 
 layer.beginChanges()
 
 try:
-	for path in layer.paths:
+    for pathIndex, path in enumerate( layer.paths ):
+        newPath = GSPath()
+        
+        for node in path.nodes:
+            newPath.addNode_( node.copy() )
+            
+            if node.type != "offcurve" and node.selected:
+                newPath.nodes[len(newPath.nodes)-1].smooth = False
 
-	    for node in path.nodes:
+                newNode = GSNode()
+                newNode.type = "line"
+                newNode.smooth = False
+                newNode.position = node.position
+                newPath.addNode_( newNode )
+        
+        newPath.closed = True if path.closed else False
+        newPathsArray.append( newPath )
 
-	        if node.type != "offcurve" and node.selected:
-
-	            newNode = GSNode()
-	            newNode.type = "line"
-	            newNode.smooth = False
-	            newNode.position = node.position
-	            node.smooth = False
-	            path.insertNode_atIndex_( newNode, node.index+1 )
+    layer.paths = newPathsArray
 
 finally:
     layer.endChanges()
