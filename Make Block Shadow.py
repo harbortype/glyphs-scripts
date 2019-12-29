@@ -307,7 +307,7 @@ class MakeBlockShadow( object ):
                     if len(diagonalExtremes) % 2 == 0:
                         n = 0
                         tupleList = []
-                        for i in range( len(diagonalExtremes)/2 ):
+                        for i in range( len(diagonalExtremes)//2 ):
                             tupleList.append( (diagonalExtremes[n], diagonalExtremes[n+1]) )
                             n += 2
 
