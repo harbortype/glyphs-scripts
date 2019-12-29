@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-
 #MenuTitle: SVG Export
-__doc__="""
+# -*- coding: utf-8 -*-
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Export SVG files to a subfolder defined by the user. The script takes a JSON file as input. In the JSON file, define the layers which will be exported (from the bottom up) and its colors.
 """
 
@@ -50,7 +49,7 @@ class ExportSVG(object):
         
         # Load Settings:
         if not self.loadPreferences():
-            print "Note: 'Export SVG' could not load preferences. Will resort to defaults"
+            print("Note: 'Export SVG' could not load preferences. Will resort to defaults")
         
         # Open window and focus on it:
         self.w.open()
@@ -98,7 +97,7 @@ class ExportSVG(object):
             return jsonData
         except:
             Glyphs.showMacroWindow()
-            print 'No JSON file exists at %s' % (jsonFile)
+            print('No JSON file exists at %s' % (jsonFile))
 
 
     def setColors(self, layerColors):
@@ -259,15 +258,15 @@ class ExportSVG(object):
                 self.regexSvg(svgPath)
             
             if not self.savePreferences(self):
-                print "Note: 'Export SVG' could not write preferences."
+                print("Note: 'Export SVG' could not write preferences.")
 
             self.w.close()
 
-            print 'Done!'
+            print('Done!')
 
-        except Exception, e:
+        except Exception as e:
             # brings macro window to front and reports error:
             Glyphs.showMacroWindow()
-            print "Export SVG Error:\n%s" % e
+            print("Export SVG Error:\n%s" % e)
 
 ExportSVG()

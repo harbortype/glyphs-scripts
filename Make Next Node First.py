@@ -1,6 +1,7 @@
 #MenuTitle: Make Next Node First
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
 """
 

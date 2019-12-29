@@ -1,6 +1,7 @@
 #MenuTitle: Copy Master into Sublayer...
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on @mekkablue's Copy Layer to Layer script.
 """
 
@@ -40,7 +41,7 @@ class CopyMasterIntoSublayer( object ):
 
 		# Load Settings:
 		if not self.LoadPreferences():
-			print "Note: 'Copy Master into Sublayer' could not load preferences. Will resort to defaults."
+			print("Note: 'Copy Master into Sublayer' could not load preferences. Will resort to defaults.")
 
 		self.w.open()
 		self.w.makeKey()

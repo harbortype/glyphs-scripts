@@ -1,6 +1,7 @@
 #MenuTitle: Rename Glyphs and Update Features
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix.
 """
 
@@ -51,7 +52,7 @@ class RenameGlyphs( object ):
 
 		# Load settings
 		if not self.LoadPreferences():
-			print "Note: 'Rename Glyphs and Update Features' could not load preferences. Will resort to defaults."
+			print("Note: 'Rename Glyphs and Update Features' could not load preferences. Will resort to defaults.")
 
 		self.w.open()
 		self.w.makeKey()
@@ -110,7 +111,7 @@ class RenameGlyphs( object ):
 				glyph.name = replaceString
 				newName = glyph.name
 				newNames[ originalName ] = newName
-				print originalName, ">", newName
+				print(originalName, ">", newName)
 			
 			# Substring match
 			elif findString in glyph.name.split("."):
@@ -118,7 +119,7 @@ class RenameGlyphs( object ):
 				glyph.name = glyph.name.replace( findString, replaceString )
 				newName = glyph.name
 				newNames[ originalName ] = newName
-				print originalName, ">", newName
+				print(originalName, ">", newName)
 
 		# Classes
 		for otClass in font.classes:

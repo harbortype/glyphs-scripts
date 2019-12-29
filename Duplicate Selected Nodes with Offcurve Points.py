@@ -1,6 +1,7 @@
 #MenuTitle: Duplicate Selected Nodes with Offcurve Points
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Creates a copy of the selected nodes, adds them in place and create zero-length offcurve points in between.
 """
 

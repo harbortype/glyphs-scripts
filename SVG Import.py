@@ -1,13 +1,14 @@
 #MenuTitle: SVG Import
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Import SVG files to the 'svg' layer on each glyph. Place the SVG files in a subfolder with the name of your master. If more than one master is present, it will search for each one of them.
 """
 
 import GlyphsApp, os
 
 # Glyphs.clearLog()
-Glyphs.showMacroWindow()
+# Glyphs.showMacroWindow()
 
 # Basic variables
 myFont = Glyphs.font

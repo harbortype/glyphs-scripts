@@ -1,6 +1,7 @@
 #MenuTitle: Interpolate Path with Itself
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Interpolates the path with itself. The fixed half will be the one with the start point.
 """
 
@@ -21,7 +22,7 @@ def interpolateNode( firstNode, secondNode, factor ):
 
 for path in selectedPaths:
     if not path.closed:
-        print "Path is not closed"
+        print("Path is not closed")
     else:
         # checks if path has an even number of nodes
         nodeCount = len( path.nodes )

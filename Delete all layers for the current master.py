@@ -1,6 +1,7 @@
 #MenuTitle: Delete all layers for the current master
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
 """
 

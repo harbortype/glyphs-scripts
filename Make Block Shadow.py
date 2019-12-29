@@ -1,6 +1,7 @@
 #MenuTitle: Make Block Shadow
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Insert points on the tangents at a specific angle
 """
 
@@ -34,7 +35,7 @@ class MakeBlockShadow( object ):
         self.w.setDefaultButton( self.w.button )
 
         if not self.LoadPreferences():
-            print "Note: 'Make Block Shadow' could not load preferences. Will resort to defaults."
+            print("Note: 'Make Block Shadow' could not load preferences. Will resort to defaults.")
         
         self.w.open()
         self.w.makeKey()
@@ -257,7 +258,7 @@ class MakeBlockShadow( object ):
                     # for node in path.nodes:
                     #     if node.position == node.nextNode.position:
                     #         allExtremes.extend( [ node, node.nextNode] )
-                    # print allExtremes
+                    # print(allExtremes)
 
                     # Check if the start point should move or not
                     fixedStartPoint = True
@@ -326,7 +327,7 @@ class MakeBlockShadow( object ):
                                 pos.y = pos.y + deltaY
                                 node.position = pos
                     else:
-                        print "Could not find all extremes for glyph", layer.parent.name
+                        print("Could not find all extremes for glyph", layer.parent.name)
 
             # Replace all paths with the new ones
             if newPaths:

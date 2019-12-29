@@ -1,10 +1,12 @@
 #MenuTitle: Create Centerline
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths.
 """
 
 import GlyphsApp, vanilla
+from AppKit import NSPoint
 
 class CreateCenterline( object ):
 
@@ -48,7 +50,7 @@ class CreateCenterline( object ):
 			layer.roundCoordinates()
 		else:
 			thisGlyph = layer.parent
-			print "%s: incompatible paths in ('%s')." % ( thisGlyph.name, layer.name )
+			print("%s: incompatible paths in ('%s')." % ( thisGlyph.name, layer.name ))
 
 
 CreateCenterline()

@@ -1,6 +1,7 @@
 #MenuTitle: Open Selected Nodes
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Opens the selected nodes. Originally written by Luisa Leitenperger.
 """
 

@@ -1,6 +1,7 @@
 #MenuTitle: Open All Nodes
 # -*- coding: utf-8 -*-
-__doc__="""
+from __future__ import division, print_function, unicode_literals
+__doc__ = """
 Opens all nodes for the selected paths (or all paths if none are selected).
 """
 
