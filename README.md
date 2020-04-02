@@ -5,6 +5,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 ## Script list
 
 - **Add Extremes to Selection:** Adds extreme points to selected paths.
+- **Add Point Along Segment:** Adds points along selected segments at a specific position (time). Needs Vanilla.
 - **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
 - **Create Centerline:** Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths. Needs Vanilla.
 - **Delete all layers for the current master:** Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
