@@ -18,6 +18,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
 - **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.
+- **Reorder Axes:** Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
 - **SVG Export and SVG Import:** Generates SVGs from inside Glyphs and reimports them for creating SVG color fonts. More information below. Needs Vanilla and Drawbot.
 
 ### SVG Export.py
