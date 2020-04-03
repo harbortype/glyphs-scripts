@@ -118,7 +118,12 @@ class exportOtfTtf(object):
 			print("Note: Could not load preferences. Will resort to defaults.")
 
 		self.w.setDefaultButton(self.w.runButton)
-		self.w.closeButton.bind(unichr(27), [])
+		try:
+			# Python 3
+			self.w.closeButton.bind(chr(27), [])
+		except:
+			# Python 2
+			self.w.closeButton.bind(unichr(27), [])
 		self.w.open()
 		self.w.makeKey()
 
