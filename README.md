@@ -11,6 +11,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Delete all layers for the current master:** Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
 - **Duplicate Selected Nodes:** Creates a copy of the selected nodes and adds them in place.
 - **Duplicate Selected Nodes with Offcurve Points:** Creates a copy of the selected nodes, adds them in place and create zero-length offcurve points in between.
+- **Export Fonts into Subfolder:** Exports OTF and TTF at the same time into a specified subfolder. Needs Vanilla.
 - **Interpolate Path with Itself:** Interpolates the path with itself. The fixed half will be the one with the start point. This script will be improved in the near future.
 - **Make Block Shadow:** Insert points on the tangents at a specific angle and extrude the path in the same direction, creating a block shadow effect. Needs Vanilla.
 - **Make Component Glyph across All Layers:** Assembles the selected glyphs from components (the same as running the Make Component Glyph command for all layers) and removes all anchors.
