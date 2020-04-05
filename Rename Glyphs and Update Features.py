@@ -1,13 +1,10 @@
 #MenuTitle: Rename Glyphs and Update Features
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
+import vanilla, copy
 __doc__ = """
 Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix.
 """
-
-# from AppKit import *
-import vanilla
-
 
 font = Glyphs.font
 
@@ -16,7 +13,7 @@ class RenameGlyphs( object ):
 	def __init__( self ):
 		windowWidth = 280
 		windowHeight = 115
-		self.w = vanilla.Window(
+		self.w = vanilla.FloatingWindow(
 			( windowWidth, windowHeight ),
 			"Rename glyphs and update features",
 			autosaveName = "com.harbortype.RenameGlyphs.mainwindow"
@@ -41,13 +38,14 @@ class RenameGlyphs( object ):
 		self.w.renameButton = vanilla.Button(
 			(-130, -35, -15, -15),
 			"Rename",
-			callback=self.Rename
+			callback=self.Main
 		)
 		self.w.undoButton = vanilla.Button(
 			(15, -35, 115, -15),
 			"Undo",
 			callback=self.Undo
 		)
+		self.w.undoButton.enable(False)
 		self.w.setDefaultButton( self.w.renameButton )
 
 		# Load settings
@@ -56,6 +54,10 @@ class RenameGlyphs( object ):
 
 		self.w.open()
 		self.w.makeKey()
+
+		self.changedGlyphs = []
+		self.classesBackup = []
+		self.featuresBackup = []
 
 
 	def SavePreferences( self, sender ):
@@ -81,77 +83,108 @@ class RenameGlyphs( object ):
 
 
 	def Undo( self, sender ):
+		font.disableUpdateInterface()
+		oldNames = [glyphNames["old"] for glyphNames in self.changedGlyphs]
+		newNames = [glyphNames["new"] for glyphNames in self.changedGlyphs]
+		for i in range(len(newNames)):
+			font.glyphs[newNames[i]].name = oldNames[i]
+		# Restore the classes and features backup
+		font.classes = self.classesBackup
+		font.features = self.featuresBackup
+		# Empty the changed glyphs list
+		self.changedGlyphs = []
+		self.w.undoButton.enable(False)
+		font.enableUpdateInterface()
 
-		findString = self.w.findString.get()
-		replaceString = self.w.replaceString.get()
 
-		self.w.findString.set( replaceString )
-		self.w.replaceString.set( findString )
+	def ReplaceInCode( self, oldNames, newNames, code ):
+		for i in range(len(oldNames)):
+			code = code.replace( oldNames[i], newNames[i] )
+		return code
 
-		self.Rename( sender )
+	def RenameFeatures( self, oldNames, newNames ):
+		# Stitch together classes and features in a single loop
+		for classes_and_features in [font.classes, font.features]:
+			# Loop through classes and features in reverse order
+			# because it might delete some automatic features
+			for f in range(len(classes_and_features)-1,-1,-1):
+				class_or_feature = classes_and_features[f]
+				if isinstance(class_or_feature, GSClass):
+					objType = "class"
+				else:
+					objType = "feature"
+				# Catch an empty feature when first run
+				if not class_or_feature: 
+					continue
+				# Trigger update if automatic
+				if class_or_feature.automatic:
+					# Only update if glyphname appears in the class/feature
+					if any(glyphName in class_or_feature.code for glyphName in oldNames):
+						class_or_feature.update()
+						print("Updated %s %s" % (objType, class_or_feature.name))
+				# Find and replace in manual features
+				else:
+					code = self.ReplaceInCode(oldNames, newNames, class_or_feature.code)
+					if isinstance(class_or_feature, GSClass):
+						font.classes[class_or_feature.name].code = code
+					elif isinstance(class_or_feature, GSFeature):
+						font.features[class_or_feature.name].code = code
+					print("Replaced in %s %s" % (objType, class_or_feature.name))
 
-
-	def Rename( self, sender ):
+	def Main( self, sender ):
 
 		Glyphs.clearLog()
-
 		self.SavePreferences( sender )
+		font.disableUpdateInterface()
 
+		print("Rename Glyphs and Update Features for %s" % font.familyName)
+		print(font.filepath)
+		print()
+		
 		findString = self.w.findString.get()
 		replaceString = self.w.replaceString.get()
-		newNames = {}
+		namesDict = {}
 
-		font.disableUpdateInterface()
+		# Store classes and features for undo
+		self.classesBackup = copy.copy(font.classes)
+		self.featuresBackup = copy.copy(font.features)
+		self.w.undoButton.enable(True)
 
 		for glyph in font.glyphs:
 		
 			# Exact match
 			if findString == glyph.name:
+				glyph.beginUndo()
 				originalName = glyph.name
 				glyph.name = replaceString
 				newName = glyph.name
-				newNames[ originalName ] = newName
+				namesDict[ originalName ] = newName
+				glyph.endUndo()
+				self.changedGlyphs.append({
+					"old": originalName,
+					"new": newName
+				})
 				print(originalName, ">", newName)
 			
 			# Substring match
 			elif findString in glyph.name.split("."):
+				glyph.beginUndo()
 				originalName = glyph.name
 				glyph.name = glyph.name.replace( findString, replaceString )
 				newName = glyph.name
-				newNames[ originalName ] = newName
+				namesDict[ originalName ] = newName
+				glyph.endUndo()
+				self.changedGlyphs.append({
+					"old": originalName,
+					"new": newName
+				})
 				print(originalName, ">", newName)
 
-		# Classes
-		for otClass in font.classes:
-
-			# Update automatic classes
-			if otClass.automatic:
-				otClass.update()
-
-			# Find and replace in manual classes
-			else:
-				code = otClass.code
-				for oldName, newName in newNames.iteritems():
-					code = code.replace( oldName, newName )
-				font.classes[ otClass.name ].code = code
-
-		# Features
-		for feature in font.features:
-			
-			if feature: # Catch an empty feature when first run
-				
-				# Update automatic features
-				if feature.automatic:
-					feature.update()
-
-				# Find and replace in manual features
-				else:
-					code = feature.code
-					for oldName, newName in newNames.iteritems():
-						code = code.replace( oldName, newName )
-					font.features[ feature.name ].code = code
-
-		font.enableUpdateInterface()
+		oldNames = [glyphNames["old"] for glyphNames in self.changedGlyphs]
+		newNames = [glyphNames["new"] for glyphNames in self.changedGlyphs]
+		self.RenameFeatures(oldNames, newNames)
 		
+		font.enableUpdateInterface()
+
 
 RenameGlyphs()
