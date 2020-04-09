@@ -18,7 +18,6 @@ class ReorderAxes( object ):
 		# TODO Fix Glyphs 3 compatibility
 		axes[xs["Tag"]] = xs["Name"]
 
-	print(axes)
 	def __init__( self ):
 		# Window 'self.w':
 		windowWidth  = 280
@@ -121,6 +120,9 @@ class ReorderAxes( object ):
 					if layer.isSpecialLayer and "{" in layer.name:
 						first, values = layer.name.split("{")
 						values = values[:-1].split(",")
+						if len(values) != len(newOrder):
+							print(" ERROR: count of axes in special layer of", glyph.name, "does not match number of axes in font. Skipping...")
+							continue
 						newValues = [values[i] for i in newOrder]
 						newValues = ",".join(newValues)
 						layer.name = "%s{%s}" % (first, newValues)
