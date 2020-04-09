@@ -1,7 +1,7 @@
 #MenuTitle: Reorder Axes
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
-import vanilla
+import vanilla, collections
 from AppKit import NSDragOperationCopy, NSDragOperationMove
 __doc__="""
 Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
@@ -13,10 +13,12 @@ Glyphs.clearLog()
 class ReorderAxes( object ):
 
 	thisFont = Glyphs.font  # frontmost font
-	axes = {}
-	for axis in thisFont.axes:
-		axes[axis["Tag"]] = axis["Name"]
+	axes = collections.OrderedDict()
+	for xs in thisFont.axes:
+		# TODO Fix Glyphs 3 compatibility
+		axes[xs["Tag"]] = xs["Name"]
 
+	print(axes)
 	def __init__( self ):
 		# Window 'self.w':
 		windowWidth  = 280
@@ -24,7 +26,7 @@ class ReorderAxes( object ):
 		windowWidthResize  = 200 # user can resize width by this value
 		windowHeightResize = 200   # user can resize height by this value
 		self.w = vanilla.Window(
-			( windowWidth, windowHeight ), # default window size
+			(windowWidth, windowHeight), # default window size
 			"Reorder Axes", # window title
 			minSize = ( windowWidth, windowHeight ), # minimum size (for resizing)
 			maxSize = ( windowWidth + windowWidthResize, windowHeight + windowHeightResize ), # maximum size (for resizing)
