@@ -14,8 +14,9 @@ def process( lyr ):
 
 thisFont = Glyphs.font # frontmost font
 selectedLayers = thisFont.selectedLayers # active layers of selected glyphs
-Glyphs.clearLog() # clears log in Macro window
+master_ids = [master.id for master in thisFont.masters] # all the master ids
 
+# Glyphs.clearLog() # clears log in Macro window
 thisFont.disableUpdateInterface() # suppresses UI updates in Font View
  
 for thisLayer in selectedLayers:
@@ -23,7 +24,8 @@ for thisLayer in selectedLayers:
 	print("Processing %s" % thisGlyph.name)
 	thisGlyph.beginUndo() # begin undo grouping
 	for layer in thisGlyph.layers:
-		process( layer )
+		if layer.layerId in master_ids or layer.isSpecialLayer:
+			process( layer )
 	thisGlyph.endUndo()   # end undo grouping
 
 
