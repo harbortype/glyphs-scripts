@@ -19,6 +19,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Make Next Node First:** Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **Make Previous Node First:** Moves the start point of the selected  path(s) to the previous oncurve node. Specially useful if assigned to a keyboard shortcut.
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
+- **New Tab with Nested Components:** Opens a new Edit tab with glyphs that contain components made of components.
 - **New Tab with Overlaps:** Opens a new Edit tab containing all glyphs that contain overlaps.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
