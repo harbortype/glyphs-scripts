@@ -13,7 +13,7 @@ for thisGlyph in thisFont.glyphs:
 	for thisComponent in firstLayer.components:
 		otherGlyph = thisFont.glyphs[thisComponent.name]
 		if otherGlyph.layers[0].components:
-			txt += thisGlyph.string
+			txt += "/{0}".format(thisGlyph.name)
 			break
 
 if txt:
