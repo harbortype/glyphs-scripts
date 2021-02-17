@@ -21,6 +21,9 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
 - **New Tab with Nested Components:** Opens a new Edit tab with glyphs that contain components made of components.
 - **New Tab with Overlaps:** Opens a new Edit tab containing all glyphs that contain overlaps.
+- **New Tab with Repeating Components:** Opens a new Edit tab with glyphs that contain multiple instance of the same component. They might be interpolating with the wrong ones!
+- **New Tab with Rotated, Scaled or Flipped Components:** Opens a new edit tab with components that were rotated, scaled or flipped. They may cause issues on TrueType.
+- **New Tab with Vertically Shifted Components:** Opens a new edit tab with components that are transformed beyond mere horizontal shifts.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
 - **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.

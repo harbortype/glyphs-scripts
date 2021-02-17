@@ -30,7 +30,6 @@ try:
 	thisFont.disableUpdateInterface() # suppresses UI updates in Font View
 	text = ""
 	for thisGlyph in thisFont.glyphs:
-		print(thisGlyph)
 		# thisGlyph.beginUndo() # begin undo grouping
 		thisLayer = thisGlyph.layers[0]
 		if not thisLayer.paths:
