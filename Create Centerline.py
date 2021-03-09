@@ -28,8 +28,19 @@ class CreateCenterline( object ):
 	def interpolatePaths( self, sender ):
 		font = Glyphs.font
 		layer = font.selectedLayers[0]
-		selectedPaths = layer.selectedObjects()["paths"]
 		factor = 0.5
+		if not layer.selectedObjects():
+			Message(
+				title="Create Centerline",
+				message="Please select 2 paths.",
+				OKButton="OK",
+			)
+			return
+		if Glyphs.versionNumber >= 3.0:
+			selectedPaths = [shape for shape in layer.selectedObjects()["shapes"] if isinstance(shape, GSPath)]
+		else:
+			selectedPaths = layer.selectedObjects()["paths"]
+		
 		# interpolate paths only if 2 paths are selected:
 		if ( len(selectedPaths) == 2 ) and ( len(selectedPaths[0]) == len(selectedPaths[1]) ):
 			newPath = GSPath()
@@ -50,7 +61,11 @@ class CreateCenterline( object ):
 			layer.roundCoordinates()
 		else:
 			thisGlyph = layer.parent
-			print("%s: incompatible paths in ('%s')." % ( thisGlyph.name, layer.name ))
+			Message(
+				title="Create Centerline",
+				message="%s: selected paths are not compatible ('%s')." % ( thisGlyph.name, layer.name ),
+				OKButton="OK",
+			)
 
 
 CreateCenterline()
