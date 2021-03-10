@@ -29,6 +29,7 @@ class CreateCenterline( object ):
 		font = Glyphs.font
 		layer = font.selectedLayers[0]
 		factor = 0.5
+		
 		if not layer.selectedObjects():
 			Message(
 				title="Create Centerline",
@@ -42,30 +43,40 @@ class CreateCenterline( object ):
 			selectedPaths = layer.selectedObjects()["paths"]
 		
 		# interpolate paths only if 2 paths are selected:
-		if ( len(selectedPaths) == 2 ) and ( len(selectedPaths[0]) == len(selectedPaths[1]) ):
-			newPath = GSPath()
-			thisPath = selectedPaths[0]
-			selectedPaths[1].reverse()
-			for thisNodeIndex in range(len(thisPath.nodes)):
-				thisNode = thisPath.nodes[thisNodeIndex]
-				foregroundPosition = thisNode.position
-				backgroundPosition = selectedPaths[1].nodes[thisNodeIndex].position
-				newNode = GSNode()
-				newNode.type = thisNode.type
-				newNode.connection = thisNode.connection
-				newNode.setPosition_( self.interpolatedPosition( foregroundPosition, backgroundPosition, factor ) )
-				newPath.addNode_( newNode )
-			if thisPath.closed == True:
-				newPath.setClosePath_(1)
-			layer.paths.append( newPath )
-			layer.roundCoordinates()
-		else:
+		if ( len(selectedPaths) != 2 ):
+			Message(
+				title="Create Centerline",
+				message="Please select 2 paths.",
+				OKButton="OK",
+			)
+			return
+
+		# check if paths are compatible
+		if ( len(selectedPaths[0]) != len(selectedPaths[1]) ):
 			thisGlyph = layer.parent
 			Message(
 				title="Create Centerline",
 				message="%s: selected paths are not compatible ('%s')." % ( thisGlyph.name, layer.name ),
 				OKButton="OK",
 			)
+			return
+
+		newPath = GSPath()
+		thisPath = selectedPaths[0]
+		selectedPaths[1].reverse()
+		for thisNodeIndex in range(len(thisPath.nodes)):
+			thisNode = thisPath.nodes[thisNodeIndex]
+			foregroundPosition = thisNode.position
+			backgroundPosition = selectedPaths[1].nodes[thisNodeIndex].position
+			newNode = GSNode()
+			newNode.type = thisNode.type
+			newNode.connection = thisNode.connection
+			newNode.setPosition_( self.interpolatedPosition( foregroundPosition, backgroundPosition, factor ) )
+			newPath.addNode_( newNode )
+		if thisPath.closed == True:
+			newPath.setClosePath_(1)
+		layer.paths.append( newPath )
+		layer.roundCoordinates()
 
 
 CreateCenterline()
