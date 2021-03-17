@@ -33,19 +33,30 @@ master_ids = [master.id for master in thisFont.masters] # all the master ids
 
 # Glyphs.clearLog() # clears log in Macro window
 thisFont.disableUpdateInterface() # suppresses UI updates in Font View
-text = ""
  
 for thisLayer in selectedLayers:
 	thisGlyph = thisLayer.parent
+	thisGlyph.beginUndo() # begin undo grouping
 	if checkForOverlaps(thisGlyph.layers[0]):
-		thisGlyph.beginUndo() # begin undo grouping
 		for layer in thisGlyph.layers:
 			if layer.layerId in master_ids or layer.isSpecialLayer:
 				print("Processing %s : %s" % (thisGlyph.name, layer.name))
 				process( layer )
-				if "/%s " % (thisGlyph.name) not in text:
-					text += "/%s " % (thisGlyph.name)
-		thisGlyph.endUndo()   # end undo grouping
+	else:
+		for layer in thisGlyph.layers:
+			if layer.layerId in master_ids or layer.isSpecialLayer:
+				print("Correcting path directions for %s : %s" % (thisGlyph.name, layer.name))
+				layer.correctPathDirection()
+	thisGlyph.endUndo()   # end undo grouping
+
+text = ""
+for thisLayer in selectedLayers:
+	thisGlyph = thisLayer.parent
+	if thisGlyph.mastersCompatible:
+		continue
+	else:
+		if "/%s " % (thisGlyph.name) not in text:
+			text += "/%s " % (thisGlyph.name)
 
 thisFont.newTab(text)
 thisFont.enableUpdateInterface() # re-enables UI updates in Font View
