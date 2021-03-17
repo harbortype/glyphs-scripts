@@ -1,8 +1,8 @@
-#MenuTitle: Copy to Background and Remove Overlaps in All Masters
+#MenuTitle: Remove Overlaps and Correct Path Directions in All Masters
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 __doc__="""
-Copies all layers of the selected glyphs to the background, remove overlaps and correct path directions in all layers. Skips glyphs with no overlaps. Reports in Macro Window.
+Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
 """
 
 def checkForOverlaps( lyr ):

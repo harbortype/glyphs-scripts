@@ -7,7 +7,6 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Add Extremes to Selection:** Adds extreme points to selected paths.
 - **Add Point Along Segment:** Adds points along selected segments at a specific position (time). Needs Vanilla.
 - **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
-- **Copy to Background and Remove Overlaps in All Masters:** Copies all layers of the selected glyphs to the background, remove overlaps and correct path directions in all layers.
 - **Create Centerline:** Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths. Needs Vanilla.
 - **Delete all layers for the current master:** Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
 - **Duplicate Selected Nodes:** Creates a copy of the selected nodes and adds them in place.
@@ -26,6 +25,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **New Tab with Vertically Shifted Components:** Opens a new edit tab with components that are transformed beyond mere horizontal shifts.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
+- **Remove Overlaps and Correct Path Directions in All Masters:** Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
 - **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.
 - **Reorder Axes:** Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
 - **Replace in Family Name:** Finds and replaces in family name, including Variable Font Family Name and instances’ familyName custom parameters. Needs Vanilla.
