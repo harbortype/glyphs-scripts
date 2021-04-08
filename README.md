@@ -25,6 +25,8 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **New Tab with Vertically Shifted Components:** Opens a new edit tab with components that are transformed beyond mere horizontal shifts.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
+- **Re-interpolate:** Re-interpolates selected layers. Makes it possible to assign a keyboard shortcut to this command via Preferences > Shortcuts (in Glyphs 3) or System Preferences > Keyboard > Shortcuts > App Shortcuts (in Glyphs 2).
+- **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
 - **Remove Overlaps and Correct Path Directions in All Masters:** Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
 - **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.
 - **Reorder Axes:** Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
