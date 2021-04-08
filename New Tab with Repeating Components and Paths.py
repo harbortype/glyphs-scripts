@@ -1,8 +1,8 @@
-#MenuTitle: New Tab with Repeating Components
+#MenuTitle: New Tab with Repeating Components and Paths
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 __doc__="""
-Opens a new Edit tab with glyphs that contain multiple instance of the same component. They might be interpolating with the wrong ones!
+Opens a new Edit tab with glyphs that contain multiple instances of the same component or path. They might be interpolating with the wrong ones!
 """
 
 thisFont = Glyphs.font
