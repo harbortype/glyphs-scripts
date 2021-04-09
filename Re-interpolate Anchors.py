@@ -18,3 +18,4 @@ for thisLayer in thisFont.selectedLayers:
 	except: # Glyphs 2
 		thisLayer.paths = originalLayer.paths
 		thisLayer.components = originalLayer.components
+	thisLayer.width = originalLayer.width
