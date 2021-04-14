@@ -13,6 +13,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **Duplicate Selected Nodes with Offcurve Points:** Creates a copy of the selected nodes, adds them in place and create zero-length offcurve points in between.
 - **Export Fonts into Subfolder:** Exports OTF and TTF at the same time into a specified subfolder. Needs Vanilla.
 - **Interpolate Path with Itself:** Interpolates the path with itself. The fixed half will be the one with the start point. This script will be improved in the near future.
+- **List Glyphs in Current Tab:** Appends a line with the unique glyphs of the current tab.
 - **Make Block Shadow:** Insert points on the tangents at a specific angle and extrude the path in the same direction, creating a block shadow effect. Needs Vanilla.
 - **Make Component Glyph across All Layers:** Assembles the selected glyphs from components (the same as running the Make Component Glyph command for all layers) and removes all anchors.
 - **Make Next Node First:** Moves the start point of the selected  path(s) to the next oncurve node. Specially useful if assigned to a keyboard shortcut.
