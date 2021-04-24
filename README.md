@@ -109,6 +109,15 @@ In a nutshell, for each master, it will check if there is a subfolder with the s
 
 ## Installing
 
+### Glyphs 3
+
+1. **Install the modules:** In *Window > Plugin Manager,* click on the *Modules* tab, and make sure at least the [Python](glyphsapp3://showplugin/python) and [Vanilla](glyphsapp3://showplugin/vanilla) modules are installed. If they were not installed before, restart the app.
+2. **Install the scripts:** Go to *Window > Plugin Manager* and click on the *Scripts* tab. Scroll down to [Harbortype scripts](glyphsapp3://showplugin/harbortype%20scripts%20by%20Henrique%20Beier) and click on the *Install* button next to it. 
+
+Now the scripts are available in *Script > Harbortype.* If the Harbortype scripts do not show up in the *Script* menu, hold down the Option key and choose *Script > Reload Scripts* (⌘⌥⇧Y).
+
+### Glyphs 2
+
 Download or clone this repository and put it into the Scripts folder. To find this folder, go to Script > Open Scripts Folder (⌘⇧Y) in Glyphs. After placing the scripts there, hold down the Option key and go to Script > Reload Scripts (⌘⌥⇧Y). The scripts will now be visible in the Script menu.
 
 Some scripts require Tal Leming’s Vanilla. To install it, go to the menu Glyphs > Preferences > Addons > Modules and click the Install Modules button.
