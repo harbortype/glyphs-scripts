@@ -40,6 +40,7 @@ Based on mekkablue's Webfont Test HTML script.
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
 - **New Tab with Kerning Pairs for Selected Glyph:** Opens a new tab with kerning pairs for the selected glyph (minus diacritics).
 - **New Tab with Missing Kerning Pairs:** Compares two glyphs files and opens a new tab with missing kerning pairs for the current master.
+- **New Tab with Zero Kerning Pairs:** Opens a new tab with missing kerning pairs (value set as zero) for each master.
 
 ### Layers
 
