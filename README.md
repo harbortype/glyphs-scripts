@@ -50,6 +50,7 @@ Based on mekkablue's Webfont Test HTML script.
 ### Paths
 
 - **Add Extremes to Selection:** Adds extreme points to selected paths.
+- **Add Nodes on Selected Segments at 45°:** Adds nodes at 45° on selected segments. Interpolation may produce kinks if a node changes the angle AND proportion of its handles between masters. This is not a problem for extremes, but sometimes we need to add intermediate nodes to better control a curve. The easiest way to ensure no kinks will happen in difficult curves is to keep the handles at a constant angle, like 45°.
 - **Add Point Along Segment:** Adds points along selected segments at a specific position (time). Needs Vanilla.
 - **Create Centerline:** Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths. Needs Vanilla.
 - **Duplicate Selected Nodes:** Creates a copy of the selected nodes and adds them in place.
