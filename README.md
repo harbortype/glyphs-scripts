@@ -15,6 +15,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ### Font Info
 
+- **Remove Vertical Metrics Parameters from Instances:** Removes all vertical metrics parameters from instances (typo, hhea and win).
 - **Reorder Axes:** Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
 - **Replace in Family Name:** Finds and replaces in family name, including Variable Font Family Name and instances’ familyName custom parameters. Needs Vanilla.
 - **Sort Instances:** Sorts instances by axes values. Needs Vanilla.
