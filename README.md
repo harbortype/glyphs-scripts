@@ -10,6 +10,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ### Components
 
+- **Decompose Nested Components:** Decompose nested components on selected glyphs.
 - **Make Component Glyph across All Layers:** Assembles the selected glyphs from components (the same as running the Make Component Glyph command for all layers) and removes all anchors.
 - **New Tab with Nested Components:** Opens a new Edit tab with glyphs that contain components made of components.
 - **Rebuild Components in Double Quotes:** Replaces components in double quotes using the single quotes in all layers. For example, if the quotedblleft is made from a rotated quotedblright, it will copy the current component to the background and rebuild it using 2 quotelefts.
