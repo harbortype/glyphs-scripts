@@ -38,6 +38,7 @@ Based on mekkablue's Webfont Test HTML script.
 ### Kerning
 
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
+- **New Tab with Kerning Pairs for Selected Glyph:** Opens a new tab with kerning pairs for the selected glyph (minus diacritics).
 
 ### Layers
 
