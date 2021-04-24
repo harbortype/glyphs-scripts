@@ -15,8 +15,9 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **New Tab with Nested Components:** Opens a new Edit tab with glyphs that contain components made of components.
 - **Rebuild Components in Double Quotes:** Replaces components in double quotes using the single quotes in all layers. For example, if the quotedblleft is made from a rotated quotedblright, it will copy the current component to the background and rebuild it using 2 quotelefts.
 
-### Font Info
+### Font
 
+- **Export Fonts into Subfolder:** Exports OTF and TTF at the same time into a specified subfolder. Needs Vanilla.
 - **Remove Vertical Metrics Parameters from Instances:** Removes all vertical metrics parameters from instances (typo, hhea and win).
 - **Reorder Axes:** Reorder axes and their values in masters, instances and special layers. Needs Vanilla.
 - **Replace in Family Name:** Finds and replaces in family name, including Variable Font Family Name and instances’ familyName custom parameters. Needs Vanilla.
@@ -38,17 +39,17 @@ Based on mekkablue's Webfont Test HTML script.
 
 - **New Tab with Repeating Components and Paths:** Opens a new Edit tab with glyphs that contain multiple instances of the same component or path. They might be interpolating with the wrong ones!
 
-### Kerning
+### Layers
+
+- **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
+- **Remove all layers for the current master:** Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
+
+### Metrics and Kerning
 
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
 - **New Tab with Kerning Pairs for Selected Glyph:** Opens a new tab with kerning pairs for the selected glyph (minus diacritics).
 - **New Tab with Missing Kerning Pairs:** Compares two glyphs files and opens a new tab with missing kerning pairs for the current master.
 - **New Tab with Zero Kerning Pairs:** Opens a new tab with missing kerning pairs (value set as zero) for each master.
-
-### Layers
-
-- **Copy Master into Sublayer:** Copies a master into a sublayer of another master for the selected glyphs. Useful for creating COLR/CPAL color fonts. Based on [@mekkablue](https://github.com/mekkablue/Glyphs-Scripts)'s Copy Layer to Layer script. Needs Vanilla.
-- **Remove all layers for the current master:** Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
 
 ### Paths
 
@@ -68,11 +69,6 @@ Based on mekkablue's Webfont Test HTML script.
 - **Re-interpolate:** Re-interpolates selected layers. Makes it possible to assign a keyboard shortcut to this command via Preferences > Shortcuts (in Glyphs 3) or System Preferences > Keyboard > Shortcuts > App Shortcuts (in Glyphs 2).
 - **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
 - **Remove Overlaps and Correct Path Directions in All Masters:** Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
-
-
-
-- **Export Fonts into Subfolder:** Exports OTF and TTF at the same time into a specified subfolder. Needs Vanilla.
-
 
 ## SVG Export and Import
 
