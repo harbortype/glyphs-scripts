@@ -100,15 +100,26 @@ class ReplaceInFamilyName( object ):
 
 			# Replace in custom parameters in instances
 			for thisInstance in thisFont.instances:
-				if thisInstance.customParameters["familyName"]:
-					oldFamilyName = thisInstance.customParameters["familyName"]
-					newFamilyName = oldFamilyName.replace(findString, replaceString)
-					thisInstance.customParameters["familyName"] = newFamilyName
-					if oldFamilyName != newFamilyName:
-						print("Instance %s familyName renamed from %s to %s" % (thisInstance.name, oldFamilyName, newFamilyName))
+				for parameter in thisInstance.customParameters:
+					if parameter.name == "familyName":
+						oldFamilyName = thisInstance.customParameters["familyName"]
+						newFamilyName = oldFamilyName.replace(findString, replaceString)
+						thisInstance.customParameters["familyName"] = newFamilyName
+						if oldFamilyName != newFamilyName:
+							print("Instance %s familyName renamed from %s to %s" % (thisInstance.name, oldFamilyName, newFamilyName))
+					elif parameter.name == "postscriptFontName":
+						oldFamilyName = thisInstance.customParameters["postscriptFontName"]
+						findStringPS = findString.replace(" ", "")
+						replaceStringPS = replaceString.replace(" ", "")
+						newFamilyName = oldFamilyName.replace(findStringPS, replaceStringPS)
+						thisInstance.customParameters["postscriptFontName"] = newFamilyName
+						if oldFamilyName != newFamilyName:
+							print("Instance %s postscriptFontName renamed from %s to %s" % (thisInstance.name, oldFamilyName, newFamilyName))
 			
 			
 			self.w.close() # delete if you want window to stay open
+			Glyphs.showMacroWindow()
+			
 		except Exception as e:
 			# brings macro window to front and reports error:
 			Glyphs.showMacroWindow()
