@@ -15,8 +15,10 @@ class ReorderAxes( object ):
 	thisFont = Glyphs.font  # frontmost font
 	axes = collections.OrderedDict()
 	for xs in thisFont.axes:
-		# TODO Fix Glyphs 3 compatibility
-		axes[xs["Tag"]] = xs["Name"]
+		if Glyphs.versionNumber < 3.0:
+			axes[xs["Tag"]] = xs["Name"]
+		else:
+			axes[xs.axisTag] = xs.name
 
 	def __init__( self ):
 		# Window 'self.w':
@@ -93,7 +95,10 @@ class ReorderAxes( object ):
 			newOrder = [item["Index"] for item in self.w.list_1.get()]
 			print("New order is:")
 			for i in newOrder:
-				print(" ", thisFont.axes[i]["Name"])
+				if Glyphs.versionNumber < 3.0:
+					print(" ", thisFont.axes[i]["Name"])
+				else:
+					print(" ", thisFont.axes[i].name)
 			print()
 			
 			# Reorder the font-wide Axes custom parameter
@@ -119,12 +124,12 @@ class ReorderAxes( object ):
 				for layer in glyph.layers:
 					if layer.isSpecialLayer and "{" in layer.name:
 						first, values = layer.name.split("{")
-						values = values[:-1].split(",")
+						values = [x.strip() for x in values[:-1].split(",")]
 						if len(values) != len(newOrder):
 							print(" ERROR: count of axes in special layer of", glyph.name, "does not match number of axes in font. Skipping...")
 							continue
 						newValues = [values[i] for i in newOrder]
-						newValues = ",".join(newValues)
+						newValues = ", ".join(newValues)
 						layer.name = "%s{%s}" % (first, newValues)
 						print(" ", glyph.name, "-", layer.name)
 			print()
