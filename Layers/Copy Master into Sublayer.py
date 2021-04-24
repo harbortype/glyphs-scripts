@@ -10,6 +10,7 @@ import vanilla
 thisFont = Glyphs.font
 currentMaster = thisFont.selectedFontMaster
 
+# TODO Glyphs 3 compatibility
 
 class CopyMasterIntoSublayer( object ):
 
