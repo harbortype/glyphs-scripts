@@ -16,100 +16,110 @@ Glyphs.clearLog()
 
 class exportOtfTtf(object):
 
+	windowWidth = 400
+	windowHeight = 320
+	margin = 25
+	line = 22
+	currentLine = 0
+	column = (windowWidth - margin*4) / 2
+
+	attributes = { 
+			NSForegroundColorAttributeName: NSColor.colorWithCalibratedRed_green_blue_alpha_(0, 0, 0, .3),
+		}
+
 	def __init__(self):
-		windowWidth = 400
-		windowHeight = 285
-		margin = 25
-		line = 22
-		currentLine = 0
-		column = (windowWidth - margin*4) / 2
 		
 		self.w = vanilla.Window(
-			(windowWidth, windowHeight),
+			(self.windowWidth, self.windowHeight),
 			"Export OTF and TTF into Subfolder",
-			minSize = (windowWidth, windowHeight),
-			maxSize = (windowWidth, windowHeight),
+			minSize = (self.windowWidth, self.windowHeight),
+			maxSize = (self.windowWidth, self.windowHeight),
 			autosaveName = "com.harbortype.exportOtfTtf.mainwindow"
 		)
 
-		attributes = { 
-			NSForegroundColorAttributeName: NSColor.colorWithCalibratedRed_green_blue_alpha_(0, 0, 0, .3),
-		}
 		fontName = NSAttributedString.alloc().initWithString_attributes_(
 			"File: " + os.path.basename(Glyphs.font.filepath),
-			attributes
+			self.attributes
 		)
 		self.w.currentFont = vanilla.TextBox(
-			(margin, margin-10, -margin, line),
+			(self.margin, self.margin-10, -self.margin, self.line),
 			fontName,
 			alignment = "right"
 		)
-		currentLine += line
+		self.currentLine += self.line
 
 
 		self.w.subfolder_title = vanilla.TextBox(
-			(margin, margin+currentLine, 80, line),
+			(self.margin, self.margin+self.currentLine, 80, self.line),
 			"Subfolder: "
 		)
 		self.w.subfolder = vanilla.EditText(
-			(margin+80, margin+currentLine-3, -margin, line),
+			(self.margin+80, self.margin+self.currentLine-3, -self.margin, self.line),
 		)
-		currentLine += line+13
+		self.currentLine += self.line+13
+		
+		self.w.allOpenFonts = vanilla.CheckBox(
+			(self.margin, self.margin+self.currentLine, self.column, self.line),
+			"All open fonts",
+			callback=self.savePreferences
+		)
+
+		self.currentLine += self.line+13
 
 		self.w.line = vanilla.VerticalLine(
-			(windowWidth/2, margin+currentLine, 1, line*3)
+			(self.windowWidth/2, self.margin+self.currentLine, 1, self.line*3)
 		)
 
 		self.w.otf = vanilla.CheckBox(
-			(margin, margin+currentLine, column, line),
+			(self.margin, self.margin+self.currentLine, self.column, self.line),
 			"Export OTF",
 			callback=self.savePreferences
 		)
-		currentLine += line
+		self.currentLine += self.line
 		self.w.otfRemoveOverlaps = vanilla.CheckBox(
-			(margin*2, margin+currentLine, column, line),
+			(self.margin*2, self.margin+self.currentLine, self.column, self.line),
 			"Remove overlaps",
 			callback=self.savePreferences
 		)
-		currentLine += line
+		self.currentLine += self.line
 		self.w.otfAutohint = vanilla.CheckBox(
-			(margin*2, margin+currentLine, column, line),
+			(self.margin*2, self.margin+self.currentLine, self.column, self.line),
 			"Autohint",
 			callback=self.savePreferences
 		)
-		currentLine -= line*2
+		self.currentLine -= self.line*2
 
 		self.w.ttf = vanilla.CheckBox(
-			(margin*3+column, margin+currentLine, column, line),
+			(self.margin*3+self.column, self.margin+self.currentLine, self.column, self.line),
 			"Export TTF",
 			callback=self.savePreferences
 		)
-		currentLine += line
+		self.currentLine += self.line
 		self.w.ttfRemoveOverlaps = vanilla.CheckBox(
-			(margin*4+column, margin+currentLine, column, line),
+			(self.margin*4+self.column, self.margin+self.currentLine, self.column, self.line),
 			"Remove overlaps",
 			callback=self.savePreferences
 		)
-		currentLine += line
+		self.currentLine += self.line
 		self.w.ttfAutohint = vanilla.CheckBox(
-			(margin*4+column, margin+currentLine, column, line),
+			(self.margin*4+self.column, self.margin+self.currentLine, self.column, self.line),
 			"Autohint",
 			callback=self.savePreferences
 		)
-		currentLine += line*1.5
+		self.currentLine += self.line*1.5
 
 		self.w.progress = vanilla.ProgressBar(
-			(margin, margin+currentLine, windowWidth-margin*2, 16),
+			(self.margin, self.margin+self.currentLine, self.windowWidth-self.margin*2, 16),
 		)
 		self.w.progress.set(0) # set progress indicator to zero
 
 		self.w.closeButton = vanilla.Button(
-			(margin, -margin-line, windowWidth-margin*2, line),
+			(self.margin, -self.margin-self.line, self.windowWidth-self.margin*2, self.line),
 			"Cancel",
 			callback = self.closeWindow
 		)
 		self.w.runButton = vanilla.Button(
-			(margin, -margin-line*2-8, windowWidth-margin*2, line),
+			(self.margin, -self.margin-self.line*2-8, self.windowWidth-self.margin*2, self.line),
 			"Export fonts",
 			callback = self.export
 		)
@@ -207,60 +217,81 @@ class exportOtfTtf(object):
 			Glyphs.showMacroWindow()
 			quit()
 		
-		font = Glyphs.font
+		if self.w.allOpenFonts.get():
+			fonts = Glyphs.fonts
+		else:
+			fonts = [ Glyphs.fonts[0] ]
 
 		# Configure the progress bar
 		formatsCount = 0
 		for ext in formats:
 			if formats[ext]["export"] == True:
 				formatsCount += 1
-		totalCount = formatsCount * len(font.instances)
+		totalCount = 0
+		for font in fonts:
+			totalCount += len(font.instances)
+		totalCount = formatsCount * totalCount
 
-		# Set install folder
-		subfolder = self.w.subfolder.get()
-		currentFolder = os.path.dirname(font.filepath)
-		installFolder = os.path.join(currentFolder, subfolder)
-		try:
-			os.makedirs(installFolder)
-		except OSError as exc:  # Python >2.5
-		        if exc.errno == errno.EEXIST and os.path.isdir(installFolder):
-		            pass
-		        else:
-		            raise
-		
-		currentCount = 0
-		count = {
-			"otf": 0,
-			"ttf": 0
-		}
-		
-		for ext in formats:
-			if formats[ext]["export"] == True:
-				for instance in font.instances:
-					try:
-						if instance.active:
-							fileName = "%s.%s" % (instance.fontName, ext)
-							print("Exporting %s" % fileName)
-							exportStatus = instance.generate(
-								Format = ext.upper(),
-								FontPath = installFolder + "/" + fileName,
-								AutoHint = formats[ext]["autohint"],
-								RemoveOverlap = formats[ext]["removeOverlaps"]
-								)
-							if exportStatus == True:
-								count[ext] += 1
-							if exportStatus != True:
-								print(exportStatus)
-								Glyphs.showMacroWindow()
-					except Exception as e:
-						print(e)
-					currentCount += 1
-					self.w.progress.set(100/totalCount*currentCount)
+		for f, font in enumerate(fonts):
 
-		print("Exported %s" % (font.familyName))
-		print("%s otf files" % (count["otf"]))
-		print("%s ttf files" % (count["ttf"]))
-		Glyphs.showNotification("Exported %s" % (os.path.basename(font.filepath)), "%s otf files\n%s ttf files" % (count["otf"], count["otf"]))
+			fontName = NSAttributedString.alloc().initWithString_attributes_(
+				"[%s/%s] " % (f+1, len(fonts)) + os.path.basename(Glyphs.font.filepath),
+				self.attributes
+			)
+			self.w.currentFont.set(fontName)
+
+			# # Configure the progress bar
+			# formatsCount = 0
+			# for ext in formats:
+			# 	if formats[ext]["export"] == True:
+			# 		formatsCount += 1
+			# totalCount = formatsCount * len(font.instances)
+
+			# Set install folder
+			subfolder = self.w.subfolder.get()
+			currentFolder = os.path.dirname(font.filepath)
+			installFolder = os.path.join(currentFolder, subfolder)
+			try:
+				os.makedirs(installFolder)
+			except OSError as exc:  # Python >2.5
+					if exc.errno == errno.EEXIST and os.path.isdir(installFolder):
+						pass
+					else:
+						raise
+			
+			currentCount = 0
+			count = {
+				"otf": 0,
+				"ttf": 0
+			}
+			
+			for ext in formats:
+				if formats[ext]["export"] == True:
+					for instance in font.instances:
+						try:
+							if instance.active:
+								fileName = "%s.%s" % (instance.fontName, ext)
+								print("Exporting %s" % fileName)
+								exportStatus = instance.generate(
+									Format = ext.upper(),
+									FontPath = installFolder + "/" + fileName,
+									AutoHint = formats[ext]["autohint"],
+									RemoveOverlap = formats[ext]["removeOverlaps"]
+									)
+								if exportStatus == True:
+									count[ext] += 1
+								if exportStatus != True:
+									print(exportStatus)
+									Glyphs.showMacroWindow()
+						except Exception as e:
+							print(e)
+						currentCount += 1
+						self.w.progress.set(100/totalCount*currentCount)
+
+			print("Exported %s" % (font.familyName))
+			print("%s otf files" % (count["otf"]))
+			print("%s ttf files" % (count["ttf"]))
+			Glyphs.showNotification("Exported %s" % (os.path.basename(font.filepath)), "%s otf files\n%s ttf files" % (count["otf"], count["otf"]))
 		self.w.close()
 
 

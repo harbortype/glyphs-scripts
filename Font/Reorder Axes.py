@@ -132,6 +132,43 @@ class ReorderAxes( object ):
 						newValues = ", ".join(newValues)
 						layer.name = "%s{%s}" % (first, newValues)
 						print(" ", glyph.name, "-", layer.name)
+			
+			# TODO Process delta hints ???
+			# for glyph in thisFont.glyphs:
+			# 	for layer in glyph.layers:
+			# 		for i in reversed(range(len(layer.hints))):
+			# 			hint = layer.hints[i]
+			# 			if hint.type == TTDELTA:
+			# 				elementDict = hint.elementDict()
+			# 				if "settings" in elementDict:
+			# 					settings = elementDict["settings"]
+			# 					if settings:
+			# 						for deltaType in ("deltaH","deltaV"):
+			# 							if deltaType in settings:
+			# 								newDeltas = {}
+			# 								# print(len(settings[deltaType]))
+			# 								# print(settings[deltaType])
+			# 								for transformType in settings[deltaType]:
+			# 									# print(transformType)
+			# 									transformValues = transformType[1:-1] # remove { and }
+			# 									transformValues = transformValues.split(", ")
+			# 									newValues = [transformValues[i] for i in newOrder]
+			# 									while len(newValues) < len(transformValues):
+			# 										newValues.append("0")
+			# 									newValues = ", ".join(newValues)
+			# 									newTransformType = "{" + newValues + "}"
+			# 									# print(transformType)
+			# 									# print(newValues)
+			# 									# Copy the existing deltas to the 
+			# 									deltas = settings[deltaType][transformType]
+			# 									newDeltas[newTransformType] = deltas
+			# 									# settings[deltaType][newTransformType] = deltas
+			# 									# del settings[deltaType][transformType]
+			# 									# print(deltas)
+			# 								settings[deltaType] = newDeltas
+			# 								print(settings[deltaType])
+
+			
 			print()
 			print("DONE!")
 			self.w.close() # delete if you want window to stay open

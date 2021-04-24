@@ -7,6 +7,7 @@ Interpolates the path with itself. The fixed half will be the one with the start
 
 Glyphs.clearLog()
 
+# TODO Glyphs 3 compatibility
 thisFont = Glyphs.font
 allSelected = [ x.parent for x in thisFont.selectedLayers[0].selection ]
 selectedPaths = []
@@ -30,10 +31,10 @@ for path in selectedPaths:
             nodes = path.nodes
             # creates node pairs that will be interpolated
             nodePairsIndex = []
-            for i in range( nodeCount/2 ):
+            for i in range( nodeCount//2 ):
                 nodePairsIndex.append([ i-1, nodeCount-2-i ])
             # performs the interpolation
             for pair in nodePairsIndex:
-                newPosition = interpolateNode( nodes[pair[0]], nodes[pair[1]], 0.0 )
+                newPosition = interpolateNode( nodes[pair[0]], nodes[pair[1]], 0.5 )
                 nodes[pair[1]].x = newPosition[0]
                 nodes[pair[1]].y = newPosition[1]
