@@ -99,8 +99,13 @@ class CopyMasterIntoSublayer( object ):
 
 	def ClearSublayer( self, sublayer ):
 		"""Clears all content from the current layer."""
-		sublayer.paths = None
-		sublayer.components = None
+		try:
+			# GLYPHS 3
+			sublayer.shapes = None
+		except:
+			# GLYPHS 2
+			sublayer.paths = None
+			sublayer.components = None
 		sublayer.anchors = None
 		sublayer.background = None
 
@@ -126,9 +131,15 @@ class CopyMasterIntoSublayer( object ):
 				sublayer = self.CheckIfSublayerExists( masterDestinationId, sublayerName, glyph )
 
 			# Copy paths, components and anchors
-			sublayer.paths = glyph.layers[ indexOfMasterSource ].paths
-			sublayer.components = glyph.layers[ indexOfMasterSource ].components
+			try:
+				# GLYPHS 3
+				sublayer.shapes = glyph.layers[ indexOfMasterSource ].shapes
+			except:
+				# GLYPHS 2
+				sublayer.paths = glyph.layers[ indexOfMasterSource ].paths
+				sublayer.components = glyph.layers[ indexOfMasterSource ].components			
 			sublayer.anchors = glyph.layers[ indexOfMasterSource ].anchors
+			sublayer.width = glyph.layers[ indexOfMasterSource ].width
 
 
 CopyMasterIntoSublayer()
