@@ -4,6 +4,10 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ## Script list
 
+### Anchors
+
+- **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
+
 ### Color Fonts
 
 - **SVG Export and SVG Import:** Generates SVGs from inside Glyphs and reimports them for creating SVG color fonts. More information below. Needs Vanilla and Drawbot.
@@ -67,7 +71,6 @@ Based on mekkablue's Webfont Test HTML script.
 - **Open All Nodes:** Opens all nodes for the selected paths (or all paths if none are selected).
 - **Open Selected Nodes:** Opens the selected nodes.
 - **Re-interpolate:** Re-interpolates selected layers. Makes it possible to assign a keyboard shortcut to this command via Preferences > Shortcuts (in Glyphs 3) or System Preferences > Keyboard > Shortcuts > App Shortcuts (in Glyphs 2).
-- **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
 - **Remove Overlaps and Correct Path Directions in All Masters:** Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
 
 ## SVG Export and Import
