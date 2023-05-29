@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 __doc__="""
-Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
+Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Applies to the selected glyphs only. Reports in Macro Window.
 """
 
 def checkForOverlaps( lyr ):
@@ -36,6 +36,8 @@ thisFont.disableUpdateInterface() # suppresses UI updates in Font View
  
 for thisLayer in selectedLayers:
 	thisGlyph = thisLayer.parent
+	if not thisGlyph.name:
+		continue
 	thisGlyph.beginUndo() # begin undo grouping
 	if checkForOverlaps(thisGlyph.layers[0]):
 		for layer in thisGlyph.layers:
@@ -58,5 +60,7 @@ for thisLayer in selectedLayers:
 		if "/%s " % (thisGlyph.name) not in text:
 			text += "/%s " % (thisGlyph.name)
 
-thisFont.newTab(text)
+if text:
+	thisFont.newTab(text)
+
 thisFont.enableUpdateInterface() # re-enables UI updates in Font View

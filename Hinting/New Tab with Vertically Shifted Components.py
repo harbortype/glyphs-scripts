@@ -15,7 +15,7 @@ def containsTransformedComponents( thisGlyph ):
     for thisLayer in thisGlyph.layers:
         if thisLayer.isMasterLayer or thisLayer.isSpecialLayer:
             for thisComponent in thisLayer.components:
-                if thisComponent.transform[-1] != 0.0:
+                if thisComponent.transform[-1] != 0.0 and thisComponent.component.export:
                     print("%s: component %s is shifted by %s on layer %s." % (thisGlyph.name, thisComponent.name, thisComponent.transform[-1], thisLayer.name))
                     return True
     return False 
@@ -23,7 +23,7 @@ def containsTransformedComponents( thisGlyph ):
 glyphList = []
 
 for thisGlyph in thisFont.glyphs:
-    if containsTransformedComponents( thisGlyph ):
+    if containsTransformedComponents(thisGlyph):
         glyphList.append(thisGlyph.name)
 
 if glyphList:

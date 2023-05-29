@@ -41,7 +41,7 @@ else:
 
 rightGlyphs = []
 if rightClass in masterKernDict.keys():
-	for rightPair in masterKernDict[ rightClass ]:
+	for rightPair in masterKernDict[ rightClass ].keys():
 		if rightPair[0] == '@':
 			for g in font.glyphs:
 				if g.leftKerningKey == rightPair:
@@ -50,14 +50,14 @@ if rightClass in masterKernDict.keys():
 			rightGlyphs.append( nameForID( font, rightPair ) )
 
 	filterDiacritics = lambda s: not any(x in s for x in exclude)
-	rightGlyphs = filter( filterDiacritics, rightGlyphs )
+	rightGlyphs = list(filter( filterDiacritics, rightGlyphs ))
 
 	for r in rightGlyphs:
 		text += "/%s/%s/space" % ( glyphName, r )
 	text += "\n"
 
 leftGlyphs = []
-for leftPair, rightKernDict in masterKernDict.iteritems():
+for leftPair, rightKernDict in masterKernDict.items():
 	if leftClass in rightKernDict.keys():
 		if leftPair[0] == '@':
 			for g in font.glyphs:
@@ -67,7 +67,7 @@ for leftPair, rightKernDict in masterKernDict.iteritems():
 			leftGlyphs.append( nameForID( font, leftPair ) )
 
 		filterDiacritics = lambda s: not any(x in s for x in exclude)
-		leftGlyphs = filter( filterDiacritics, leftGlyphs )
+		leftGlyphs = list(filter( filterDiacritics, leftGlyphs ))
 		
 for L in leftGlyphs:
 	text += '/%s/%s/space' % ( L, glyphName )
@@ -75,6 +75,5 @@ for L in leftGlyphs:
 # print(text)
 
 if text:
-	from PyObjCTools.AppHelper import callAfter
-	callAfter( Glyphs.currentDocument.windowController().addTabWithString_, text )
+	font.newTab(text)
 

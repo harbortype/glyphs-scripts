@@ -13,6 +13,8 @@ listOfSelectedLayers = thisFont.selectedLayers # active layers of selected glyph
 
 def containsTransformedComponents( thisGlyph ):
     for thisLayer in thisGlyph.layers:
+        if thisLayer.layerId != thisLayer.associatedMasterId and not thisLayer.isSpecialLayer:
+            continue
         for thisComponent in thisLayer.components:
             if thisComponent.transform[:4] != (1.0,0.0,0.0,1.0):
                 print(thisGlyph.name, thisComponent)
