@@ -51,6 +51,7 @@ Based on mekkablue's Webfont Test HTML script.
 
 ### Metrics and Kerning
 
+- **Copy Kerning Groups from Unsuffixed Glyphs:** Copies the kerning groups from the default (unsuffixed) glyphs to the selected ones. The selected glyphs need to have a dot suffix, otherwise they will be skipped.
 - **New Tab with Kerning Exceptions:** Opens a new Edit tab containing all kerning exceptions for the current master.
 - **New Tab with Kerning Pairs for Selected Glyph:** Opens a new tab with kerning pairs for the selected glyph (minus diacritics).
 - **New Tab with Missing Kerning Pairs:** Compares two glyphs files and opens a new tab with missing kerning pairs for the current master.
