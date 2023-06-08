@@ -76,6 +76,7 @@ Based on mekkablue's Webfont Test HTML script.
 - **Open Selected Nodes:** Opens the selected nodes.
 - **Re-interpolate:** Re-interpolates selected layers. Makes it possible to assign a keyboard shortcut to this command via Preferences > Shortcuts (in Glyphs 3) or System Preferences > Keyboard > Shortcuts > App Shortcuts (in Glyphs 2).
 - **Remove Overlaps and Correct Path Directions in All Masters:** Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Reports in Macro Window.
+- **Round Coordinates for Entire Font:** Round coordinates of all paths in the entire font.
 
 ## SVG Export and Import
 
