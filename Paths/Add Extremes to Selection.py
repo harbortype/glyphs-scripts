@@ -1,17 +1,19 @@
-#MenuTitle: Add Extremes to Selection
+# MenuTitle: Add Extremes to Selection
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+__doc__ = """
 Adds extreme points to selected paths.
 """
+
+from GlyphsApp import Glyphs, GSPath
 
 thisFont = Glyphs.font
 thisLayer = thisFont.selectedLayers[0]
 
-try: 
-    for i in range(len(Layer.shapes)-1,-1,-1):
-        shape = Layer.shapes[i]
-        if type(shape) == GSPath:
+try:
+    for i in range(len(thisLayer.shapes) - 1, -1, -1):
+        shape = thisLayer.shapes[i]
+        if isinstance(shape, GSPath):
             pathSelected = False
             for node in shape.nodes:
                 if node in thisLayer.selection:
