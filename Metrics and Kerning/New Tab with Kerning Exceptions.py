@@ -1,26 +1,36 @@
-#MenuTitle: New Tab with Kerning Exceptions
+# MenuTitle: New Tab with Kerning Exceptions
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+__doc__ = """
 Opens a new Edit tab containing all kerning exceptions for the current master.
 """
 
-tabText=""
-currentMasterID = Font.selectedFontMaster.id
-masterKerning = Font.kerning[currentMasterID]
+from GlyphsApp import Glyphs
+
+tabText = ""
+font = Glyphs.font
+currentMasterID = font.selectedFontMaster.id
+masterKerning = font.kerning[currentMasterID]
+
+
+def GetGlyphName(kerning_key):
+    if kerning_key[0] == "@":
+        return kerning_key[7:]
+    else:
+        return font.glyphForId_(kerning_key).name
+
 
 for leftSide in masterKerning.keys():
-	leftSideGlyph = leftSide[7:] if leftSide[0] == "@" else Font.glyphForId_(leftSide).name
-	
-	if leftSide[0] != "@" and Font.glyphs[leftSideGlyph].rightKerningGroup:
-		for rightSide in masterKerning[leftSide].keys():
-			rightSideGlyph = rightSide[7:] if rightSide[0] == "@" else Font.glyphForId_(rightSide).name
-			tabText+="nn/%s/%s nn\n" % (leftSideGlyph, rightSideGlyph)
-	
-	else:
-		for rightSide in masterKerning[leftSide].keys():
-			rightSideGlyph = rightSide[7:] if rightSide[0] == "@" else Font.glyphForId_(rightSide).name
-			if rightSide[0]!="@" and Font.glyphs[rightSideGlyph].leftKerningGroup:
-				tabText+="nn/%s/%s nn\n" % (leftSideGlyph, rightSideGlyph)
+    left_glyph = GetGlyphName(leftSide)
 
-Font.newTab(tabText.strip())
+    if leftSide[0] != "@" and font.glyphs[left_glyph].rightKerningGroup:
+        for rightSide in masterKerning[leftSide].keys():
+            right_glyph = GetGlyphName(rightSide)
+            tabText += "nn/%s/%s nn\n" % (left_glyph, right_glyph)
+    else:
+        for rightSide in masterKerning[leftSide].keys():
+            right_glyph = GetGlyphName(rightSide)
+            if rightSide[0] != "@" and font.glyphs[right_glyph].leftKerningGroup:
+                tabText += "nn/%s/%s nn\n" % (left_glyph, right_glyph)
+
+font.newTab(tabText.strip())
