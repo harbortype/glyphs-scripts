@@ -63,7 +63,7 @@ class CreateCenterline(object):
             return
 
         # check if paths are compatible
-        if (len(selectedPaths[0]) != len(selectedPaths[1])):
+        if (len(selectedPaths[0].nodes) != len(selectedPaths[1].nodes)):
             thisGlyph = layer.parent
             Message(
                 title="Create Centerline",
