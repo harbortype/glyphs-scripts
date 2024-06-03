@@ -8,7 +8,7 @@ Creates a centerline between two selected paths. The paths should have opposite 
 from GlyphsApp import Glyphs, GSPath, GSNode, Message, pointOnLine
 
 
-def interpolatePaths():
+def makeCenterline():
     font = Glyphs.font
     layer = font.selectedLayers[0]
     factor = 0.5
@@ -47,6 +47,11 @@ def interpolatePaths():
     firstPath = selectedPaths[0]
     otherPath = selectedPaths[1]
 
+    newPath = interpolatePaths(firstPath, otherPath, factor)
+    layer.paths.append(newPath)
+
+
+def interpolatePaths(firstPath, otherPath, factor):
     otherPath.reverse()
     newPath = GSPath()
     for nodeIndex in range(len(firstPath.nodes)):
@@ -63,7 +68,7 @@ def interpolatePaths():
         newPath.nodes.append(newNode)
     if firstPath.closed:
         newPath.setClosePath_(1)
-    layer.paths.append(newPath)
+    return newPath
 
 
-interpolatePaths()
+makeCenterline()
