@@ -48,7 +48,7 @@ def makeCenterline():
         return
 
     firstPath = selectedPaths[0]
-    otherPath = selectedPaths[1]
+    otherPath = selectedPaths[1].copy()
 
     newPath = interpolatePaths(firstPath, otherPath, factor)
     layer.paths.append(newPath)
