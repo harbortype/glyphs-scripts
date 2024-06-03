@@ -44,23 +44,26 @@ def interpolatePaths():
         )
         return
 
+    firstPath = selectedPaths[0]
+    otherPath = selectedPaths[1]
+
+    otherPath.reverse()
     newPath = GSPath()
-    thisPath = selectedPaths[0]
-    selectedPaths[1].reverse()
-    for thisNodeIndex in range(len(thisPath.nodes)):
-        thisNode = thisPath.nodes[thisNodeIndex]
-        foregroundPosition = thisNode.position
-        backgroundPosition = selectedPaths[1].nodes[thisNodeIndex].position
-        newNode = GSNode()
-        newNode.type = thisNode.type
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        thisPosition = thisNode.position
+        otherPosition = otherNode.position
+        interpolatesPosition = pointOnLine(
+            thisPosition, otherPosition, factor
+        )
+        newNode = GSNode(interpolatesPosition, thisNode.type)
         newNode.connection = thisNode.connection
-        newNode.setPosition_(pointOnLine(
-            foregroundPosition, backgroundPosition, factor))
-        newPath.addNode_(newNode)
-    if thisPath.closed:
+        newNode.roundToGrid_(1)
+        newPath.nodes.append(newNode)
+    if firstPath.closed:
         newPath.setClosePath_(1)
     layer.paths.append(newPath)
-    layer.roundCoordinates()
 
 
 interpolatePaths()
