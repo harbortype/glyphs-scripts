@@ -5,15 +5,8 @@ __doc__ = """
 Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths.
 """
 
-from GlyphsApp import Glyphs, GSPath, GSNode, Message
-from AppKit import NSPoint
+from GlyphsApp import Glyphs, GSPath, GSNode, Message, pointOnLine
 
-
-def interpolatedPosition(foregroundPos, backgroundPos, factor):
-    interpolatedX = foregroundPos.x * factor + backgroundPos.x * factor
-    interpolatedY = foregroundPos.y * factor + backgroundPos.y * factor
-    interpolatedPosition = NSPoint(interpolatedX, interpolatedY)
-    return interpolatedPosition
 
 def interpolatePaths():
     font = Glyphs.font
@@ -63,7 +56,7 @@ def interpolatePaths():
         newNode = GSNode()
         newNode.type = thisNode.type
         newNode.connection = thisNode.connection
-        newNode.setPosition_(interpolatedPosition(
+        newNode.setPosition_(pointOnLine(
             foregroundPosition, backgroundPosition, factor))
         newPath.addNode_(newNode)
     if thisPath.closed:
