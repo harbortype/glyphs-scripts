@@ -54,8 +54,24 @@ def makeCenterline():
     layer.paths.append(newPath)
 
 
-def interpolatePaths(firstPath, otherPath, factor):
+def matchPathDirection(firstPath, otherPath):
+    nodeDistance = 0
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        nodeDistance += distance(thisNode.position, otherNode.position)
     otherPath.reverse()
+    reverseNodeDistance = 0
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        reverseNodeDistance += distance(thisNode.position, otherNode.position)
+    if reverseNodeDistance > nodeDistance:
+        otherPath.reverse()  # reverse it back as it made the match worse
+
+
+def interpolatePaths(firstPath, otherPath, factor):
+    matchPathDirection(firstPath, otherPath)
     newPath = GSPath()
     for nodeIndex in range(len(firstPath.nodes)):
         thisNode = firstPath.nodes[nodeIndex]
