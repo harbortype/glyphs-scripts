@@ -16,8 +16,7 @@ def interpolatePaths():
     if not layer.selectedObjects():
         Message(
             title="Create Centerline",
-            message="Please select 2 paths.",
-            OKButton="OK",
+            message="Please select 2 paths."
         )
         return
     if Glyphs.versionNumber >= 3.0:
@@ -30,8 +29,7 @@ def interpolatePaths():
     if (len(selectedPaths) != 2):
         Message(
             title="Create Centerline",
-            message="Please select 2 paths.",
-            OKButton="OK",
+            message="Please select 2 paths."
         )
         return
 
@@ -41,8 +39,8 @@ def interpolatePaths():
         Message(
             title="Create Centerline",
             message="%s: selected paths are not compatible ('%s')." % (
-                thisGlyph.name, layer.name),
-            OKButton="OK",
+                thisGlyph.name, layer.name
+            )
         )
         return
 
