@@ -5,91 +5,89 @@ __doc__ = """
 Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths.
 """
 
-import vanilla
 from GlyphsApp import Glyphs, GSPath, GSNode, Message
 from AppKit import NSPoint
 
+def pointOnLine(P0, P1, t):
+    return NSMakePoint(P0.x + ((P1.x - P0.x) * t), P0.y + ((P1.y - P0.y) * t))
 
-class CreateCenterline(object):
+def makeCenterline():
+    font = Glyphs.font
+    layer = font.selectedLayers[0]
+    factor = 0.5
 
-    key = "com.harbortype.CreateCenterline"
-
-    def __init__(self):
-        self.w = vanilla.FloatingWindow(
-            (180, 66), "", autosaveName=self.key + ".mainwindow")
-        self.w.runButton = vanilla.Button(
-            (25, 20, 130, 20),
-            "Create centerline!",
-            sizeStyle='regular',
-            callback=self.interpolatePaths
+    if not layer.selectedObjects():
+        Message(
+            title="Create Centerline",
+            message="Please select 2 paths."
         )
-        self.w.setDefaultButton(self.w.runButton)
-        # self.w.runButton.bind('`', [])
-        self.w.open()
+        return
+    if Glyphs.versionNumber >= 3.0:
+        selectedPaths = [shape for shape in layer.selectedObjects(
+        )["shapes"] if isinstance(shape, GSPath)]
+    else:
+        selectedPaths = layer.selectedObjects()["paths"]
 
-        # self.w.makeKey()
+    # interpolate paths only if 2 paths are selected:
+    if (len(selectedPaths) != 2):
+        Message(
+            title="Create Centerline",
+            message="Please select 2 paths."
+        )
+        return
 
-    def interpolatedPosition(self, foregroundPos, backgroundPos, factor):
-        interpolatedX = foregroundPos.x * factor + backgroundPos.x * factor
-        interpolatedY = foregroundPos.y * factor + backgroundPos.y * factor
-        interpolatedPosition = NSPoint(interpolatedX, interpolatedY)
-        return interpolatedPosition
-
-    def interpolatePaths(self, sender):
-        font = Glyphs.font
-        layer = font.selectedLayers[0]
-        factor = 0.5
-
-        if not layer.selectedObjects():
-            Message(
-                title="Create Centerline",
-                message="Please select 2 paths.",
-                OKButton="OK",
+    # check if paths are compatible
+    if (len(selectedPaths[0].nodes) != len(selectedPaths[1].nodes)):
+        thisGlyph = layer.parent
+        Message(
+            title="Create Centerline",
+            message="%s: selected paths are not compatible ('%s')." % (
+                thisGlyph.name, layer.name
             )
-            return
-        if Glyphs.versionNumber >= 3.0:
-            selectedPaths = [shape for shape in layer.selectedObjects(
-            )["shapes"] if isinstance(shape, GSPath)]
-        else:
-            selectedPaths = layer.selectedObjects()["paths"]
+        )
+        return
 
-        # interpolate paths only if 2 paths are selected:
-        if (len(selectedPaths) != 2):
-            Message(
-                title="Create Centerline",
-                message="Please select 2 paths.",
-                OKButton="OK",
-            )
-            return
+    firstPath = selectedPaths[0]
+    otherPath = selectedPaths[1].copy()
 
-        # check if paths are compatible
-        if (len(selectedPaths[0].nodes) != len(selectedPaths[1].nodes)):
-            thisGlyph = layer.parent
-            Message(
-                title="Create Centerline",
-                message="%s: selected paths are not compatible ('%s')." % (
-                    thisGlyph.name, layer.name),
-                OKButton="OK",
-            )
-            return
-
-        newPath = GSPath()
-        thisPath = selectedPaths[0]
-        selectedPaths[1].reverse()
-        for thisNodeIndex in range(len(thisPath.nodes)):
-            thisNode = thisPath.nodes[thisNodeIndex]
-            foregroundPosition = thisNode.position
-            backgroundPosition = selectedPaths[1].nodes[thisNodeIndex].position
-            newNode = GSNode()
-            newNode.type = thisNode.type
-            newNode.connection = thisNode.connection
-            newNode.setPosition_(self.interpolatedPosition(
-                foregroundPosition, backgroundPosition, factor))
-            newPath.addNode_(newNode)
-        if thisPath.closed:
-            newPath.setClosePath_(1)
-        layer.paths.append(newPath)
-        layer.roundCoordinates()
+    newPath = interpolatePaths(firstPath, otherPath, factor)
+    layer.paths.append(newPath)
 
 
-CreateCenterline()
+def matchPathDirection(firstPath, otherPath):
+    nodeDistance = 0
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        nodeDistance += distance(thisNode.position, otherNode.position)
+    otherPath.reverse()
+    reverseNodeDistance = 0
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        reverseNodeDistance += distance(thisNode.position, otherNode.position)
+    if reverseNodeDistance > nodeDistance:
+        otherPath.reverse()  # reverse it back as it made the match worse
+
+
+def interpolatePaths(firstPath, otherPath, factor):
+    matchPathDirection(firstPath, otherPath)
+    newPath = GSPath()
+    for nodeIndex in range(len(firstPath.nodes)):
+        thisNode = firstPath.nodes[nodeIndex]
+        otherNode = otherPath.nodes[nodeIndex]
+        thisPosition = thisNode.position
+        otherPosition = otherNode.position
+        interpolatesPosition = pointOnLine(
+            thisPosition, otherPosition, factor
+        )
+        newNode = GSNode(interpolatesPosition, thisNode.type)
+        newNode.connection = thisNode.connection
+        newNode.roundToGrid_(1)
+        newPath.nodes.append(newNode)
+    if firstPath.closed:
+        newPath.setClosePath_(1)
+    return newPath
+
+
+makeCenterline()
