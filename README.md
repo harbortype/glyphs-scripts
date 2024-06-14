@@ -31,6 +31,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ### Glyph Names
 
+- **Copy Sort Names from Background Font:** Copies the custom sortNames for all glyphs from the font in the background.
 - **List Glyphs in Current Tab:** Appends a line with the unique glyphs of the current tab.
 - **Rename Glyphs and Update Features:** Renames glyphs and updates all classes and features. Will match either the entire glyph name or the dot suffix. Needs Vanilla.
 
