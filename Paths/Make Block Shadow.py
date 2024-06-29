@@ -251,10 +251,6 @@ class MakeBlockShadow(object):
                         allExtremes.append(diagonalExtremes[i])
                         allExtremes.append(duplicateExtremes[i])
 
-                    # Selects the diagonal extreme nodes
-                    for node in diagonalExtremes:
-                        layer.selection.append(node)
-
                     # Move the nodes
                     if distance != 0:
 
@@ -327,10 +323,8 @@ class MakeBlockShadow(object):
                                 else:
                                     selection = path.nodes[pair[0].index + 1:pair[1].index + 1]
 
-                                layer.selection = selection
-
                                 # Finaly move a node
-                                for node in layer.selection:
+                                for node in selection:
                                     pos = node.position
                                     pos.x = pos.x + deltaX
                                     pos.y = pos.y + deltaY
