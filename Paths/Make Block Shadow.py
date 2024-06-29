@@ -18,21 +18,19 @@ class MakeBlockShadow(object):
 
     def __init__(self):
 
-        windowWidth = 260
-        windowHeight = 160
+        windowWidth = 220
+        windowHeight = 110
         self.w = vanilla.FloatingWindow(
             (windowWidth, windowHeight),
             "Make Block Shadow",
-            minSize=(windowWidth, windowHeight),
-            maxSize=(windowWidth, windowHeight),
             autosaveName="com.harbortype.MakeBlockShadow.mainwindow"
         )
 
-        self.w.text_1 = vanilla.TextBox((30, 26, 120, 17), "Angle:")
-        self.w.angle = vanilla.EditText((100, 24, -30, 22), callback=self.SavePreferences)
-        self.w.text_2 = vanilla.TextBox((30, 56, 120, 17), "Distance:")
-        self.w.distance = vanilla.EditText((100, 54, -30, 22), callback=self.SavePreferences)
-        self.w.button = vanilla.Button((30, -46, -30, 20), "Make Shadow", callback=self.Main)
+        self.w.text_1 = vanilla.TextBox((30, 16, 120, 17), "Angle:")
+        self.w.angle = vanilla.EditText((100, 14, -30, 22), callback=self.SavePreferences)
+        self.w.text_2 = vanilla.TextBox((30, 46, 120, 17), "Distance:")
+        self.w.distance = vanilla.EditText((100, 44, -30, 22), callback=self.SavePreferences)
+        self.w.button = vanilla.Button((30, -34, -30, 20), "Make Shadow", callback=self.Main)
 
         self.w.setDefaultButton(self.w.button)
 
