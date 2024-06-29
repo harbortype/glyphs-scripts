@@ -342,6 +342,8 @@ class MakeBlockShadow(object):
                     layer.selection = None
 
         except Exception as e:
+            import traceback
+            print(traceback.format_exc())
             raise e
 
         finally:
