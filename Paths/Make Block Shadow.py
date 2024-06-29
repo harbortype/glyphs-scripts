@@ -123,7 +123,10 @@ class MakeBlockShadow(object):
 
                             # Rotate the segment and add points to the extremes
                             self.RotatePath(fakeSegment, tangentAngle)
-                            fakeSegment.addExtremes_(True)
+                            if Glyphs.versionNumber < 3.0:
+                                fakeSegment.addExtremes_(True)
+                            else:
+                                fakeSegment.addExtremes_checkSelection_(True, False)
 
                             closestNode = None
                             middleTangent = 1
