@@ -1,13 +1,17 @@
-#MenuTitle: Decompose Nested Components
+# MenuTitle: Decompose Nested Components
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+
+__doc__ = """
 Decompose nested components on selected glyphs.
 """
 from Foundation import NSPoint
+from GlyphsApp import Glyphs, Message
 
 thisFont = Glyphs.font
 decomposed = []
+
 
 def hasExportingComponents(glyph):
 	for comp in glyph.layers[0].components:
@@ -15,11 +19,12 @@ def hasExportingComponents(glyph):
 			return True
 	return False
 
+
 for layer in thisFont.selectedLayers:
 	thisGlyph = layer.parent
 	for thisLayer in thisGlyph.layers:
 		toDecompose = []
-		for i in range(len(thisLayer.components)-1,-1,-1):
+		for i in range(len(thisLayer.components) - 1, -1, -1):
 			thisComponent = thisLayer.components[i]
 			thisComponentPosition = thisComponent.position
 			otherGlyph = thisFont.glyphs[thisComponent.name]
@@ -28,7 +33,7 @@ for layer in thisFont.selectedLayers:
 					otherGlyphPosition = otherGlyph.layers[thisLayer.layerId].components[0].position
 					if thisGlyph.name not in decomposed:
 						decomposed.append(thisGlyph.name)
-					thisComponent.decompose(doAnchors = False)
+					thisComponent.decompose(doAnchors=False)
 					# Reposition component
 					newComponent = thisLayer.components[i]
 					if newComponent.position.y:
@@ -36,8 +41,7 @@ for layer in thisFont.selectedLayers:
 					newComponent.position.x = NSPoint(
 						thisComponentPosition.x + otherGlyphPosition.x,
 						thisComponentPosition.y + otherGlyphPosition.y
-						)
-
+					)
 
 
 if len(decomposed):

@@ -6,6 +6,8 @@ __doc__ = """
 Opens a new Edit tab with glyphs containing components in their backgrounds.
 """
 
+from GlyphsApp import Glyphs, GSControlLayer, Message
+
 thisFont = Glyphs.font
 tabLayers = []
 

@@ -1,26 +1,28 @@
-#MenuTitle: New Tab with Kerning Pairs for Selected Glyph
+# MenuTitle: New Tab with Kerning Pairs for Selected Glyph
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
+
 __doc__ = """
 Opens a new tab with kerning pairs for the selected glyph (minus diacritics)
 """
 
-import GlyphsApp
+from GlyphsApp import Glyphs
 
 # Glyphs.clearLog()
 
-def nameForID( font, ID ):
-	if ID[0] == "@": # is a group
-		return ID
-	else: # is a glyph
-		return font.glyphForId_( ID ).name
 
-	
+def nameForID(font, ID):
+	if ID[0] == "@":  # is a group
+		return ID
+	else:  # is a glyph
+		return font.glyphForId_(ID).name
+
+
 font = Glyphs.font
 masterID = font.selectedFontMaster.id
-masterKernDict = font.kerning[ masterID ]
+masterKernDict = font.kerning[masterID]
 text = ''
-exclude = [ "acute", "breve", "caron", "cedilla", "circumflex", "commaaccent", "dieresis", "dotaccent", "grave", "hungarumlaut", "macron", "ogonek", "ring", "tilde" ]
+exclude = ["acute", "breve", "caron", "cedilla", "circumflex", "commaaccent", "dieresis", "dotaccent", "grave", "hungarumlaut", "macron", "ogonek", "ring", "tilde"]
 
 glyph = font.selectedLayers[0].parent
 glyphName = glyph.name
@@ -32,28 +34,28 @@ rightKey = glyph.rightKerningKey
 if leftKey[0] == '@':
 	leftClass = leftKey
 else:
-	leftClass = font.glyphs[ glyphName ].id
-	
+	leftClass = font.glyphs[glyphName].id
+
 if rightKey[0] == '@':
 	rightClass = rightKey
 else:
-	rightClass = font.glyphs[ glyphName ].id
+	rightClass = font.glyphs[glyphName].id
 
 rightGlyphs = []
 if rightClass in masterKernDict.keys():
-	for rightPair in masterKernDict[ rightClass ].keys():
+	for rightPair in masterKernDict[rightClass].keys():
 		if rightPair[0] == '@':
 			for g in font.glyphs:
 				if g.leftKerningKey == rightPair:
-					rightGlyphs.append( g.name )
+					rightGlyphs.append(g.name)
 		else:
-			rightGlyphs.append( nameForID( font, rightPair ) )
+			rightGlyphs.append(nameForID(font, rightPair))
 
 	filterDiacritics = lambda s: not any(x in s for x in exclude)
-	rightGlyphs = list(filter( filterDiacritics, rightGlyphs ))
+	rightGlyphs = list(filter(filterDiacritics, rightGlyphs))
 
 	for r in rightGlyphs:
-		text += "/%s/%s/space" % ( glyphName, r )
+		text += "/%s/%s/space" % (glyphName, r)
 	text += "\n"
 
 leftGlyphs = []
@@ -62,18 +64,17 @@ for leftPair, rightKernDict in masterKernDict.items():
 		if leftPair[0] == '@':
 			for g in font.glyphs:
 				if g.rightKerningKey == leftPair:
-					leftGlyphs.append( g.name )
+					leftGlyphs.append(g.name)
 		else:
-			leftGlyphs.append( nameForID( font, leftPair ) )
+			leftGlyphs.append(nameForID(font, leftPair))
 
 		filterDiacritics = lambda s: not any(x in s for x in exclude)
-		leftGlyphs = list(filter( filterDiacritics, leftGlyphs ))
-		
+		leftGlyphs = list(filter(filterDiacritics, leftGlyphs))
+
 for L in leftGlyphs:
-	text += '/%s/%s/space' % ( L, glyphName )
+	text += '/%s/%s/space' % (L, glyphName)
 
 # print(text)
 
 if text:
 	font.newTab(text)
-
