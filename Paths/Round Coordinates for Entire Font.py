@@ -6,7 +6,6 @@ Round coordinates of all paths in the entire font.
 """
 
 from GlyphsApp import Glyphs
-from Foundation import NSPoint
 
 this_font = Glyphs.font
 
@@ -16,9 +15,6 @@ try:
         for this_layer in this_glyph.layers:
             for this_path in this_layer.paths:
                 for this_node in this_path.nodes:
-                    this_node.position = NSPoint(
-                        int(this_node.position.x),
-                        int(this_node.position.y),
-                    )
+                    this_node.roundToGrid_(1)
 finally:
     this_font.enableUpdateInterface()

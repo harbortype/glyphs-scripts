@@ -5,11 +5,13 @@ __doc__ = """
 Creates a centerline between two selected paths. The paths should have opposite directions. If it doesn’t work as expected, try reversing one of the paths.
 """
 
-from GlyphsApp import Glyphs, GSPath, GSNode, Message
-from AppKit import NSPoint
+from GlyphsApp import Glyphs, GSPath, GSNode, Message, distance
+from AppKit import NSMakePoint
+
 
 def pointOnLine(P0, P1, t):
     return NSMakePoint(P0.x + ((P1.x - P0.x) * t), P0.y + ((P1.y - P0.y) * t))
+
 
 def makeCenterline():
     font = Glyphs.font

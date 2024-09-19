@@ -1,79 +1,81 @@
-#MenuTitle: Replace in Family Name
+# MenuTitle: Replace in Family Name
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+
+__doc__ = """
 Finds and replaces in family name, including Variable Font Family Name and instances’ familyName custom parameters. Needs Vanilla.
 """
 
 import vanilla
+from GlyphsApp import Glyphs
 
-class ReplaceInFamilyName( object ):
-	def __init__( self ):
+
+class ReplaceInFamilyName(object):
+	def __init__(self):
 		# Window 'self.w':
-		windowWidth  = 250
+		windowWidth = 250
 		windowHeight = 145
-		windowWidthResize  = 100 # user can resize width by this value
-		windowHeightResize = 0   # user can resize height by this value
+		windowWidthResize = 100  # user can resize width by this value
+		windowHeightResize = 0  # user can resize height by this value
 		self.w = vanilla.Window(
-			( windowWidth, windowHeight ), # default window size
-			"Replace in Family Name", # window title
-			minSize = ( windowWidth, windowHeight ), # minimum size (for resizing)
-			maxSize = ( windowWidth + windowWidthResize, windowHeight + windowHeightResize ), # maximum size (for resizing)
-			autosaveName = "com.harbortype.ReplaceInFamilyName.mainwindow" # stores last window position and size
+			(windowWidth, windowHeight),  # default window size
+			"Replace in Family Name",  # window title
+			minSize=(windowWidth, windowHeight),  # minimum size (for resizing)
+			maxSize=(windowWidth + windowWidthResize, windowHeight + windowHeightResize),  # maximum size (for resizing)
+			autosaveName="com.harbortype.ReplaceInFamilyName.mainwindow"  # stores last window position and size
 		)
-		
+
 		# UI elements:
 		linePos, inset, lineHeight = 22, 25, 25
-		self.w.text_1 = vanilla.TextBox( (inset-1, linePos+2, 75, 14), "Find:", sizeStyle='small' )
-		self.w.find = vanilla.EditText( (inset+80, linePos, -inset, 19), "", sizeStyle='small', callback=self.SavePreferences)
+		self.w.text_1 = vanilla.TextBox((inset - 1, linePos + 2, 75, 14), "Find:", sizeStyle='small')
+		self.w.find = vanilla.EditText((inset + 80, linePos, -inset, 19), "", sizeStyle='small', callback=self.SavePreferences)
 		linePos += lineHeight
-		self.w.text_2 = vanilla.TextBox( (inset-1, linePos+2, 75, 14), "Replace with:", sizeStyle='small' )
-		self.w.replace = vanilla.EditText( (inset+80, linePos, -inset, 19), "", sizeStyle='small', callback=self.SavePreferences)
+		self.w.text_2 = vanilla.TextBox((inset - 1, linePos + 2, 75, 14), "Replace with:", sizeStyle='small')
+		self.w.replace = vanilla.EditText((inset + 80, linePos, -inset, 19), "", sizeStyle='small', callback=self.SavePreferences)
 		linePos += lineHeight
-		
+
 		# Run Button:
-		self.w.runButton = vanilla.Button( (-80-inset, -20-inset, -inset, -inset), "Run", sizeStyle='regular', callback=self.ReplaceInFamilyNameMain )
-		self.w.setDefaultButton( self.w.runButton )
-		
+		self.w.runButton = vanilla.Button((-80 - inset, -20 - inset, -inset, -inset), "Run", sizeStyle='regular', callback=self.ReplaceInFamilyNameMain)
+		self.w.setDefaultButton(self.w.runButton)
+
 		# Load Settings:
 		if not self.LoadPreferences():
 			print("Note: 'Replace in Family Name' could not load preferences. Will resort to defaults")
-		
+
 		# Open window and focus on it:
 		self.w.open()
 		self.w.makeKey()
-		
-	def SavePreferences( self, sender ):
+
+	def SavePreferences(self, sender):
 		try:
 			Glyphs.defaults["com.harbortype.ReplaceInFamilyName.find"] = self.w.find.get()
 			Glyphs.defaults["com.harbortype.ReplaceInFamilyName.replace"] = self.w.replace.get()
 		except:
 			return False
-			
 		return True
 
-	def LoadPreferences( self ):
+	def LoadPreferences(self):
 		try:
 			Glyphs.registerDefault("com.harbortype.ReplaceInFamilyName.find", "")
 			Glyphs.registerDefault("com.harbortype.ReplaceInFamilyName.replace", "")
-			self.w.find.set( Glyphs.defaults["com.harbortype.ReplaceInFamilyName.find"] )
-			self.w.replace.set( Glyphs.defaults["com.harbortype.ReplaceInFamilyName.replace"] )
+			self.w.find.set(Glyphs.defaults["com.harbortype.ReplaceInFamilyName.find"])
+			self.w.replace.set(Glyphs.defaults["com.harbortype.ReplaceInFamilyName.replace"])
 		except:
 			return False
-			
 		return True
 
-	def ReplaceInFamilyNameMain( self, sender ):
+	def ReplaceInFamilyNameMain(self, sender):
 		try:
 			# update settings to the latest user input:
-			if not self.SavePreferences( self ):
+			if not self.SavePreferences(self):
 				print("Note: 'Replace in Family Name' could not write preferences.")
-			
-			thisFont = Glyphs.font # frontmost font
+
+			thisFont = Glyphs.font  # frontmost font
 			print("Replace in Family Name Report for %s" % thisFont.familyName)
 			print(thisFont.filepath)
 			print()
-			
+
 			findString = self.w.find.get()
 			replaceString = self.w.replace.get()
 
@@ -115,19 +117,19 @@ class ReplaceInFamilyName( object ):
 						thisInstance.customParameters["postscriptFontName"] = newFamilyName
 						if oldFamilyName != newFamilyName:
 							print("Instance %s postscriptFontName renamed from %s to %s" % (thisInstance.name, oldFamilyName, newFamilyName))
-			
-			
-			self.w.close() # delete if you want window to stay open
+
+			self.w.close()  # delete if you want window to stay open
 			Glyphs.showMacroWindow()
-			
+
 		except Exception as e:
 			# brings macro window to front and reports error:
 			Glyphs.showMacroWindow()
 			print("Replace in Family Name Error: %s" % e)
 			import traceback
 			print(traceback.format_exc())
-		
+
 		finally:
 			thisFont.enableUpdateInterface()
+
 
 ReplaceInFamilyName()
