@@ -6,6 +6,8 @@ __doc__ = """
 Opens a new Edit tab with glyphs that contain components made of components.
 """
 
+from GlyphsApp import Glyphs, Message
+
 thisFont = Glyphs.font
 txt = ""
 

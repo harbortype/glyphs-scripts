@@ -1,9 +1,13 @@
-#MenuTitle: Remove all layers for the current master
+# MenuTitle: Remove all layers for the current master
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
+
 __doc__ = """
 Deletes all non-master layers for the current master (including bracket and brace layers) in selected glyphs.
 """
+
+from GlyphsApp import Glyphs
 
 # Glyphs.showMacroWindow()
 # Glyphs.clearLog()

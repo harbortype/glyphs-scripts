@@ -5,7 +5,7 @@ __doc__ = """
 Interpolates the path with itself. The fixed half will be the one with the start point.
 """
 
-from GlyphsApp import Glyphs, GSPath, Message
+from GlyphsApp import Glyphs, GSPath
 
 # TODO Glyphs 3 compatibility
 thisFont = Glyphs.font

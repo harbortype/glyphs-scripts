@@ -1,11 +1,15 @@
-#MenuTitle: Remove Vertical Metrics Parameters from Instances
+# MenuTitle: Remove Vertical Metrics Parameters from Instances
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+
+__doc__ = """
 Removes all vertical metrics parameters from instances (typo, hhea and win).
 """
 
-Glyphs.clearLog() # clears macro window log
+from GlyphsApp import Glyphs
+
+Glyphs.clearLog()  # clears macro window log
 font = Glyphs.font
 
 verticalParameters = [
@@ -23,7 +27,7 @@ for i, instance in enumerate(font.instances):
 	for p in reversed(range(len(instance.customParameters))):
 		if instance.customParameters[p].name in verticalParameters:
 			parameterName = instance.customParameters[p].name
-			del(instance.customParameters[p])
+			del instance.customParameters[p]
 			print(instance.name, ": removed %s parameter." % (parameterName))
 			count += 1
 

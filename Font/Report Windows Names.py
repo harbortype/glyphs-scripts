@@ -1,11 +1,15 @@
-#MenuTitle: Report Windows Names
+# MenuTitle: Report Windows Names
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
-__doc__="""
+
+__doc__ = """
 Checks for the length of nameID 1 and 4, which can cause issues in Word for Windows and Word for Mac respectively.
 """
 
-Glyphs.clearLog() # clears macro window log
+from GlyphsApp import Glyphs
+
+Glyphs.clearLog()  # clears macro window log
 
 thisFont = Glyphs.font
 

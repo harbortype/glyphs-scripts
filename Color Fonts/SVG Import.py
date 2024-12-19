@@ -1,11 +1,14 @@
-#MenuTitle: SVG Import
+# MenuTitle: SVG Import
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
+
 __doc__ = """
 Import SVG files to the 'svg' layer on each glyph. Place the SVG files in a subfolder with the name of your master. If more than one master is present, it will search for each one of them.
 """
 
-import GlyphsApp, os
+import os
+from GlyphsApp import Glyphs, GSLayer, GSBackgroundImage
 
 # Glyphs.clearLog()
 # Glyphs.showMacroWindow()
@@ -15,33 +18,33 @@ myFont = Glyphs.font
 upm = myFont.upm
 
 # Default folder is the current folder
-currentDir = os.path.dirname( myFont.filepath )
+currentDir = os.path.dirname(myFont.filepath)
 
 
 def findFolder(currentMaster):
     """
-    Reads the name of the current master and checks if there is a subfolder 
-    with the same name (relative to the frontmost .glyphs file). 
+    Reads the name of the current master and checks if there is a subfolder
+    with the same name (relative to the frontmost .glyphs file).
     The comparison is case insensitive.
-    
+
     Arguments:
         currentMaster {str} -- GSMaster object
 
     Returns: valid subfolder path
     """
     masterName = currentMaster.name
-    potentialSubfolder = os.path.join( currentDir, masterName )
+    potentialSubfolder = os.path.join(currentDir, masterName)
 
-    if os.path.isdir( potentialSubfolder ):
+    if os.path.isdir(potentialSubfolder):
         return potentialSubfolder
     else:
         return None
 
 
-def findSvgLayer(layers,masterId):
+def findSvgLayer(layers, masterId):
     """
     Finds the 'svg' layer associated with a specific master ID
-    
+
     Arguments:
         layers {arr} -- array of GSLayers of a glyph
         masterId {str} -- unique ID of master
@@ -69,21 +72,21 @@ for master in myFont.masters:
         # store glyph names and svg paths
         glyphNamesDict = {}
 
-        for root, dirs, files in os.walk( svgFolder ):
+        for root, dirs, files in os.walk(svgFolder):
             # Filter the files list, keeping svg files only
-            files = [ fi for fi in files if fi.endswith(".svg") ]
+            files = [fi for fi in files if fi.endswith(".svg")]
 
             for fileName in files:
-                # For each file in dir, store the glyph name and the 
+                # For each file in dir, store the glyph name and the
                 # complete svg path in the dictionaty
                 glyphName = fileName[:-4]
-                glyphNamesDict[glyphName] = os.path.join( root.lower(), fileName )
+                glyphNamesDict[glyphName] = os.path.join(root.lower(), fileName)
 
         # The dictionary is complete now.
         # Let's start adding the svg files to the font
 
         for glyphName, svgPath in glyphNamesDict.iteritems():
-            # We iterate svg files instead of glyphs in the font 
+            # We iterate svg files instead of glyphs in the font
             # because it is more likely to exist fewer svgs than glyphs
             g = myFont.glyphs[glyphName]
 
@@ -91,7 +94,7 @@ for master in myFont.masters:
                 # If a glyph exists with the same name as the svg,
                 # reset the svgLayer variable
                 svgLayer = None
-                svgLayer = findSvgLayer( g.layers, masterId )
+                svgLayer = findSvgLayer(g.layers, masterId)
                 if svgLayer:
                     # Clears the svg layer if it exists and is a
                     # child of the current master
@@ -104,12 +107,12 @@ for master in myFont.masters:
                     newLayer.name = 'svg'
                     newLayer.associatedMasterId = masterId
                     g.layers.append(newLayer)
-                    # Run the function to find the svg layer again so we can 
+                    # Run the function to find the svg layer again so we can
                     # select the freshly created layer
-                    svgLayer = findSvgLayer( g.layers, masterId )
+                    svgLayer = findSvgLayer(g.layers, masterId)
 
                 # Add the image to the svg layer
                 newImage = GSBackgroundImage.alloc().initWithPath_(svgPath)
-                svgLayer.setBackgroundImage_( newImage )
+                svgLayer.setBackgroundImage_(newImage)
 
 myFont.enableUpdateInterface()

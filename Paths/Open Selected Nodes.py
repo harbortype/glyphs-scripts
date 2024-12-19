@@ -91,9 +91,9 @@ try:
     # Delete original paths so there are no duplicates
     for pathIndex in reversed(delArray):
         try:  # Glyphs 3
-            del(layer.shapes[pathIndex])
+            del layer.shapes[pathIndex]
         except:  # Glyphs 2
-            del(layer.paths[pathIndex])
+            del layer.paths[pathIndex]
 
     # Append the open paths
     for path in pathArray:
