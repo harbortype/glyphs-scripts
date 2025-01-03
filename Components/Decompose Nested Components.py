@@ -23,6 +23,8 @@ def hasExportingComponents(glyph):
 for layer in thisFont.selectedLayers:
 	thisGlyph = layer.parent
 	for thisLayer in thisGlyph.layers:
+		if not thisLayer.isMasterLayer and not thisLayer.isSpecialLayer:
+			continue
 		toDecompose = []
 		for i in range(len(thisLayer.components) - 1, -1, -1):
 			thisComponent = thisLayer.components[i]
