@@ -5,7 +5,7 @@ __doc__ = """
 Removes overlaps (if so, copies the original to the background), corrects path directions in all layers and opens a new tab with glyphs that became incompatible. Applies to the selected glyphs only. Reports in Macro Window.
 """
 
-from GlyphsApp import Glyphs
+from GlyphsApp import Glyphs, GSControlLayer
 from AppKit import NSClassFromString
 
 
@@ -41,9 +41,11 @@ master_ids = [master.id for master in thisFont.masters]  # all the master ids
 thisFont.disableUpdateInterface()  # suppresses UI updates in Font View
 
 for thisLayer in selectedLayers:
-    thisGlyph = thisLayer.parent
-    if not thisGlyph.name:
+
+    if isinstance(thisLayer, GSControlLayer):
         continue
+
+    thisGlyph = thisLayer.parent
     thisGlyph.beginUndo()  # begin undo grouping
     if checkForOverlaps(thisGlyph.layers[0]):
         for layer in thisGlyph.layers:
