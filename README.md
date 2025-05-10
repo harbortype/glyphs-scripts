@@ -22,6 +22,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 - **New Tab with Components in Background:** Opens a new Edit tab with glyphs containing components in their backgrounds.
 - **New Tab with Nested Components:** Opens a new Edit tab with glyphs that contain components made of components.
 - **Rebuild Components in Double Quotes:** Replaces components in double quotes using the single quotes in all layers. For example, if the quotedblleft is made from a rotated quotedblright, it will copy the current component to the background and rebuild it using 2 quotelefts.
+- **Report Components Vertical Position:** Reports the y coordinate of all components in the selected glyphs.
 - **Set Components Alignment Type 3:** Sets the automatic alignment of all components in the selected glyphs to be type 3 (the type that allows to be vertically shifted). Applies to all masters.
 
 ### Font
