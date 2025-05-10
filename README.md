@@ -45,6 +45,7 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 Based on mekkablue's Webfont Test HTML script.
 - **New Tab with Rotated, Scaled or Flipped Components:** Opens a new edit tab with components that were rotated, scaled or flipped. They may cause issues on TrueType.
 - **New Tab with Vertically Shifted Components:** Opens a new edit tab with components that are transformed beyond mere horizontal shifts.
+- **Reverse PS Hint:** Reverses the direction of the selected PS hints.
 
 ### Interpolation
 
