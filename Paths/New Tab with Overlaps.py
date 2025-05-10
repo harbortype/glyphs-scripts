@@ -5,7 +5,7 @@ __doc__ = """
 Opens a new Edit tab containing all glyphs that contain overlaps.
 """
 
-from GlyphsApp import Glyphs
+from GlyphsApp import Glyphs, Message
 from AppKit import NSClassFromString
 
 thisFont = Glyphs.font  # frontmost font
@@ -39,6 +39,12 @@ try:
             has_overlaps = check_for_overlaps(thisLayer)
             if has_overlaps:
                 text += "/%s " % (thisGlyph.name)
-    thisFont.newTab(text)
+    if text:
+        thisFont.newTab(text)
+    else:
+        Message(
+            title="New Tab with Overlaps",
+            message="No glyphs with overlaps in this font.",
+            )
 finally:
     thisFont.enableUpdateInterface()  # re-enables UI updates in Font View
