@@ -1,11 +1,12 @@
 # Glyphs scripts
 
-An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/). 
+An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 
 ## Script list
 
 ### Anchors
 
+- **Add Caret Anchors:** Adds caret_* anchors to the selected glyphs based from the base glyphs’ widths. Applies to all layers. Does not modify existing caret anchors.
 - **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
 
 ### Color Fonts
@@ -111,7 +112,7 @@ I believe the template above is quite self-explanatory. `Extrude`, `Regular` and
 
 2) After creating all masters, create an instance for each one of them so they will be exported. To do so, got o **Font Info** > **Instances** > **+** > **Add Instance for each Master**.
 
-3) Run the script. 
+3) Run the script.
 
 In a nutshell, for each master, it will check if there is a subfolder with the same name as the master, create a layer named *svg* and import the SVG file into it.
 
@@ -121,7 +122,7 @@ In a nutshell, for each master, it will check if there is a subfolder with the s
 ### Glyphs 3
 
 1. **Install the modules:** In *Window > Plugin Manager,* click on the *Modules* tab, and make sure at least the [Python](glyphsapp3://showplugin/python) and [Vanilla](glyphsapp3://showplugin/vanilla) modules are installed. If they were not installed before, restart the app.
-2. **Install the scripts:** Go to *Window > Plugin Manager* and click on the *Scripts* tab. Scroll down to [Harbortype scripts](glyphsapp3://showplugin/harbortype%20scripts%20by%20Henrique%20Beier) and click on the *Install* button next to it. 
+2. **Install the scripts:** Go to *Window > Plugin Manager* and click on the *Scripts* tab. Scroll down to [Harbortype scripts](glyphsapp3://showplugin/harbortype%20scripts%20by%20Henrique%20Beier) and click on the *Install* button next to it.
 
 Now the scripts are available in *Script > Harbortype.* If the Harbortype scripts do not show up in the *Script* menu, hold down the Option key and choose *Script > Reload Scripts* (⌘⌥⇧Y).
 
