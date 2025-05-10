@@ -7,6 +7,8 @@ An assortment of scripts for the [Glyphs font editor](http://glyphsapp.com/).
 ### Anchors
 
 - **Add Caret Anchors:** Adds caret_* anchors to the selected glyphs based from the base glyphs’ widths. Applies to all layers. Does not modify existing caret anchors.
+- **Copy Layer Anchors from Other Font:** Copies the anchors of the current layer from the background file.
+- **Copy Selected Anchors from Other Font:** Copies the position of the selected anchors from the background file.
 - **Re-interpolate Anchors:** Re-interpolates only the anchors on selected layers.
 
 ### Color Fonts
