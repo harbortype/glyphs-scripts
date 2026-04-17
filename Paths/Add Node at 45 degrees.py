@@ -26,16 +26,23 @@ def RotatePath(path, angle):
 
 thisLayer = font.selectedLayers[0]
 for p, thisPath in enumerate(thisLayer.paths):
-	for n, thisNode in enumerate(thisPath.nodes):
-		if not thisNode.selected:
+	for n in range(len(thisPath.nodes)-1,-1,-1):
+		thisNode = thisPath.nodes[n]
+		thisSegment = [
+			thisNode,
+			thisNode.nextNode,
+			thisNode.nextNode.nextNode,
+			thisNode.nextNode.nextNode.nextNode
+			]
+
+		if not all([node.selected for node in thisSegment]):
 			continue
-		nextNode = thisNode.nextNode
-		if nextNode.type != OFFCURVE:
+		if thisSegment[1].type != OFFCURVE and thisSegment[2].type != OFFCURVE:
 			continue
 
 		# copy nodes
 		tempPath = GSPath()
-		for node in thisPath.nodes[n:n + 4]:
+		for node in thisSegment:
 			newNode = GSNode()
 			newNode.type = node.type
 			newNode.smooth = node.smooth
@@ -49,7 +56,18 @@ for p, thisPath in enumerate(thisLayer.paths):
 
 		newListOfNodes = []
 		newListOfNodes.extend(thisPath.nodes[:n])
-		newListOfNodes.extend(tempPath.nodes)
 		newListOfNodes.extend(thisPath.nodes[n + 4:])
+		if len(thisPath.nodes) != len(tempPath.nodes):
+			newListOfNodes = []
+			if n == len(thisPath.nodes)-1:
+				# first node is in segment
+				newListOfNodes.extend(tempPath.nodes)
+				newListOfNodes.extend(thisPath.nodes[3:-1])
+			else:
+				newListOfNodes.extend(thisPath.nodes[:n])
+				newListOfNodes.extend(tempPath.nodes)
+				newListOfNodes.extend(thisPath.nodes[n+4:])
+			thisPath.nodes = newListOfNodes
 
-		thisPath.nodes = newListOfNodes
+if font.gridLength:
+	thisLayer.roundCoordinates()
