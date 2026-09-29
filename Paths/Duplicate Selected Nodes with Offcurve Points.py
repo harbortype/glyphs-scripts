@@ -5,53 +5,36 @@ __doc__ = """
 Creates a copy of the selected nodes, adds them in place and create zero-length offcurve points in between.
 """
 
-from GlyphsApp import Glyphs, GSPath, GSNode
+from GlyphsApp import Glyphs, GSNode
 
 font = Glyphs.font
 layer = font.selectedLayers[0]
-newPathsArray = []
 
 
 def ProcessPath(path):
-    newPath = GSPath()
-    for node in path.nodes:
-        newPath.addNode_(node.copy())
-        if node.type != "offcurve" and node.selected:
-            newPath.nodes[len(newPath.nodes) - 1].smooth = False
-            offcurveNode1 = GSNode()
-            offcurveNode1.type = "offcurve"
-            offcurveNode1.position = node.position
-            newPath.addNode_(offcurveNode1)
-            offcurveNode2 = GSNode()
-            offcurveNode2.type = "offcurve"
-            offcurveNode2.position = node.position
-            newPath.addNode_(offcurveNode2)
-            newNode = GSNode()
-            newNode.type = "curve"
-            newNode.smooth = False
-            newNode.position = node.position
-            newPath.addNode_(newNode)
-    newPath.closed = True if path.closed else False
-    return newPath
+    selectedIndexes = [i for i, node in enumerate(path.nodes) if node.type != "offcurve" and node.selected]
+    # Insert from the end, so the indexes of earlier nodes do not change
+    for i in reversed(selectedIndexes):
+        node = path.nodes[i]
+        node.smooth = False
+        offcurveNode1 = GSNode()
+        offcurveNode1.type = "offcurve"
+        offcurveNode1.position = node.position
+        offcurveNode2 = GSNode()
+        offcurveNode2.type = "offcurve"
+        offcurveNode2.position = node.position
+        newNode = GSNode()
+        newNode.type = "curve"
+        newNode.smooth = False
+        newNode.position = node.position
+        path.nodes.insert(i + 1, offcurveNode1)
+        path.nodes.insert(i + 2, offcurveNode2)
+        path.nodes.insert(i + 3, newNode)
 
 
 layer.beginChanges()
-
 try:
-    # Glyphs 3
-    for i in range(len(layer.shapes) - 1, -1, -1):
-        shape = layer.shapes[i]
-        if isinstance(shape, GSPath):
-            newPath = ProcessPath(shape)
-            newPathsArray.append(newPath)
-        else:
-            newPathsArray.append(shape)
-    layer.shapes = newPathsArray
-except:
-    # Glyphs 2
-    for pathIndex, path in enumerate(layer.paths):
-        newPath = ProcessPath(path)
-        newPathsArray.append(newPath)
-    layer.paths = newPathsArray
+    for path in layer.paths:
+        ProcessPath(path)
 finally:
     layer.endChanges()
