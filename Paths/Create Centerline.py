@@ -13,6 +13,13 @@ def pointOnLine(P0, P1, t):
     return NSMakePoint(P0.x + ((P1.x - P0.x) * t), P0.y + ((P1.y - P0.y) * t))
 
 
+def roundToGrid(value, gridLength):
+    # a grid of 0 means the font has no grid, so keep the exact value
+    if gridLength <= 0:
+        return value
+    return round(value / gridLength) * gridLength
+
+
 def makeCenterline():
     font = Glyphs.font
     layer = font.selectedLayers[0]
@@ -52,8 +59,11 @@ def makeCenterline():
     firstPath = selectedPaths[0]
     otherPath = selectedPaths[1].copy()
 
-    newPath = interpolatePaths(firstPath, otherPath, factor)
-    layer.paths.append(newPath)
+    newPath = interpolatePaths(firstPath, otherPath, factor, font.gridLength)
+    if Glyphs.versionNumber >= 3.0:
+        layer.shapes.append(newPath)
+    else:
+        layer.paths.append(newPath)
 
 
 def matchPathDirection(firstPath, otherPath):
@@ -72,7 +82,7 @@ def matchPathDirection(firstPath, otherPath):
         otherPath.reverse()  # reverse it back as it made the match worse
 
 
-def interpolatePaths(firstPath, otherPath, factor):
+def interpolatePaths(firstPath, otherPath, factor, gridLength):
     matchPathDirection(firstPath, otherPath)
     newPath = GSPath()
     for nodeIndex in range(len(firstPath.nodes)):
@@ -83,9 +93,12 @@ def interpolatePaths(firstPath, otherPath, factor):
         interpolatesPosition = pointOnLine(
             thisPosition, otherPosition, factor
         )
-        newNode = GSNode(interpolatesPosition, thisNode.type)
+        roundedPosition = NSMakePoint(
+            roundToGrid(interpolatesPosition.x, gridLength),
+            roundToGrid(interpolatesPosition.y, gridLength)
+        )
+        newNode = GSNode(roundedPosition, thisNode.type)
         newNode.connection = thisNode.connection
-        newNode.roundToGrid_(1)
         newPath.nodes.append(newNode)
     if firstPath.closed:
         newPath.setClosePath_(1)
